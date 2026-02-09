@@ -565,7 +565,8 @@
                     </div>
                 </div>
                 
-                <h3 style="color: var(--accent); margin-top: 25px;">Key Techniques Observed</h3>
+                <h3 style="color: var(--accent); margin-top: 25px;">Key Techniques Summary (Stage 1 & 2)</h3>
+                <p>The following table summarizes the evasion and execution techniques used across both PowerShell stages:</p>
                 <table>
                     <tr>
                         <th>Stage</th>
@@ -577,7 +578,13 @@
                         <td>1</td>
                         <td>Hidden Window</td>
                         <td><code>WindowStyle::Hidden</code></td>
-                        <td>No visible console</td>
+                        <td>No visible console window</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>No New Window</td>
+                        <td><code>CreateNoWindow = $true</code></td>
+                        <td>Prevents window creation</td>
                     </tr>
                     <tr>
                         <td>1</td>
@@ -588,14 +595,26 @@
                     <tr>
                         <td>2</td>
                         <td>Memory Allocation</td>
-                        <td><code>VirtualAlloc(0x3000, 0x40)</code></td>
+                        <td><code>VirtualAlloc($s, 0x3000, 0x40)</code></td>
                         <td>RWX memory (0x40 = PAGE_EXECUTE_READWRITE)</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Shellcode Copy</td>
+                        <td><code>Marshal::Copy($b, 0, $addr, $s)</code></td>
+                        <td>Copy payload bytes to allocated memory</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>Thread Creation</td>
                         <td><code>CreateThread</code></td>
                         <td>Execute shellcode in new thread</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Wait for Execution</td>
+                        <td><code>WaitForSingleObject($th, 30000)</code></td>
+                        <td>Wait 30 seconds for shellcode completion</td>
                     </tr>
                 </table>
             </div>
