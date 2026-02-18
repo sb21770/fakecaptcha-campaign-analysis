@@ -809,14 +809,7 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                     different final payloads.
                 </p>
                 
-                <div class="evidence-box">
-                    <div class="evidence-header">Evidence 7: Process Monitor - Network Traffic Capture</div>
-                    <img src="07-procmon-c2-network-traffic.png" alt="Procmon Network">
-                    <div class="evidence-caption">
-                        Process Monitor capturing the attack establishing TCP connections to C2 servers, 
-                        showing TCP Connect, Send, and multiple Receive operations.
-                    </div>
-                </div>
+                <h3 style="color: var(--accent);">Process Monitor Evidence</h3>
 
                 <div class="evidence-box">
                     <div class="evidence-header">Evidence: Process Tree - Full Attack Flow</div>
@@ -826,11 +819,19 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                         for shellcode execution and payload delivery.
                     </div>
                 </div>
-                
-                <h3 style="color: var(--accent); margin-top: 20px;">Wireshark - Payload Downloads</h3>
 
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 8: HTTP Export - cptchbuild.bin Download</div>
+                    <div class="evidence-header">Evidence: Network Activity Flow</div>
+                    <img src="17-network-activity-flow.png" alt="Network Flow">
+                    <div class="evidence-caption">
+                        Chronological network activity showing connections to multiple C2 servers during attack execution.
+                    </div>
+                </div>
+                
+                <h3 style="color: var(--accent); margin-top: 25px;">Wireshark Evidence - Payload Downloads</h3>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: HTTP Export - cptchbuild.bin Download</div>
                     <img src="08-wireshark-cptchbuild-download.png" alt="Wireshark cptchbuild">
                     <div class="evidence-caption">
                         HTTP traffic showing the malware downloading cptchbuild.bin (186 KB) from the C2 server.
@@ -838,7 +839,7 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                 </div>
                 
                 <div class="evidence-box">
-                    <div class="evidence-header warning">Evidence 9: Alternative Payload Discovered - clipx64.bin</div>
+                    <div class="evidence-header warning">Evidence: Alternative Payload Discovered - clipx64.bin</div>
                     <img src="15-wireshark-clipx64-download.png" alt="Wireshark clipx64">
                     <div class="evidence-caption">
                         <strong>Key Discovery:</strong> During live execution, the C2 served <code>clipx64.bin</code> (67 KB) 
