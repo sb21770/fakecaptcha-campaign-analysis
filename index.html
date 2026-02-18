@@ -477,27 +477,30 @@
             header h1 { font-size: 1.5em; }
             .subtitle { font-size: 0.95em; }
             .table-wrapper { 
-                overflow-x: auto; 
+                overflow-x: scroll; 
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: thin;
                 scrollbar-color: var(--accent) var(--card-bg);
+                padding-bottom: 5px;
             }
             .table-wrapper::-webkit-scrollbar {
-                height: 8px;
+                height: 10px;
+                display: block !important;
             }
             .table-wrapper::-webkit-scrollbar-track {
-                background: var(--card-bg);
-                border-radius: 4px;
+                background: #2a2a3e;
+                border-radius: 5px;
             }
             .table-wrapper::-webkit-scrollbar-thumb {
                 background: var(--accent);
-                border-radius: 4px;
+                border-radius: 5px;
+                min-width: 50px;
             }
             .table-wrapper::-webkit-scrollbar-thumb:hover {
                 background: var(--danger);
             }
             .table-wrapper table { min-width: 500px; font-size: 0.85em; }
-            th, td { padding: 8px 10px; white-space: normal; word-break: break-word; }
+            th, td { padding: 8px 10px; white-space: nowrap; }
             .code-block { font-size: 0.8em; }
             .code-content { overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
             .section-header h2 { font-size: 1.3em; }
@@ -537,8 +540,8 @@
         @media screen and (max-width: 480px) {
             header h1 { font-size: 1.2em; }
             .meta-grid { grid-template-columns: 1fr; }
-            table { font-size: 0.8em; }
-            th, td { padding: 6px 8px; }
+            .table-wrapper table { font-size: 0.8em; min-width: 450px; }
+            th, td { padding: 6px 8px; white-space: nowrap; }
             .section-header h2 { font-size: 1.1em; }
             .stealer-grid { grid-template-columns: repeat(2, 1fr); }
             .ioc-value { font-size: 0.6em; }
