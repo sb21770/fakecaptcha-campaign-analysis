@@ -476,29 +476,53 @@
             header { padding: 30px 15px; }
             header h1 { font-size: 1.5em; }
             .subtitle { font-size: 0.95em; }
-            .table-wrapper { overflow-x: auto; }
-            table { min-width: 500px; font-size: 0.85em; }
-            th, td { padding: 8px 10px; white-space: nowrap; }
+            .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            table { min-width: auto; font-size: 0.85em; width: 100%; }
+            th, td { padding: 8px 10px; white-space: normal; word-break: break-word; }
             .code-block { font-size: 0.8em; }
-            .code-content { overflow-x: auto; white-space: pre; }
+            .code-content { overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
             .section-header h2 { font-size: 1.3em; }
             .evidence-box { margin: 15px 0; }
             .evidence-caption { font-size: 0.85em; }
             .highlight-box { padding: 15px; }
             .highlight-box h3 { font-size: 1em; }
+            .highlight-box table { min-width: auto; }
             .tag { font-size: 0.7em; padding: 3px 8px; }
-            .ioc-value { font-size: 0.75em; word-break: break-all; }
+            .ioc-value { font-size: 0.7em; word-break: break-all; display: inline-block; max-width: 100%; }
+            .wallet-value { font-size: 0.65em; }
             .meta-grid { grid-template-columns: repeat(2, 1fr); }
             .meta-item { padding: 12px; }
             .meta-item .value { font-size: 0.95em; }
             .dual-verdict { grid-template-columns: 1fr; }
+            .verdict-item { font-size: 0.9em; }
+            .attack-chain { padding: 15px; }
+            .chain-stage { flex-direction: column; gap: 10px; padding: 12px; }
+            .stage-info h4 { font-size: 0.95em; }
+            .stage-info p { font-size: 0.85em; }
+            .stage-fork { font-size: 0.9em; }
+            .crypto-grid { grid-template-columns: 1fr; }
+            .crypto-item { padding: 8px; }
+            .crypto-item .address { font-size: 0.7em; }
+            .stealer-grid { grid-template-columns: repeat(3, 1fr); }
+            .flow-diagram { padding: 15px; }
+            .flow-step { padding: 8px 10px; font-size: 0.85em; margin: 3px; }
+            .flow-arrow { margin: 0 5px; }
+            .payload-grid { grid-template-columns: 1fr !important; }
+            .status-box { overflow-x: auto; }
+            .status-box table { font-size: 0.75em; }
+            .modular-box { overflow-x: auto; }
+            .modular-box table { font-size: 0.75em; }
+            .key-findings li { font-size: 0.9em; }
         }
         
         @media screen and (max-width: 480px) {
             header h1 { font-size: 1.2em; }
             .meta-grid { grid-template-columns: 1fr; }
-            table { min-width: 400px; }
+            table { font-size: 0.8em; }
+            th, td { padding: 6px 8px; }
             .section-header h2 { font-size: 1.1em; }
+            .stealer-grid { grid-template-columns: repeat(2, 1fr); }
+            .ioc-value { font-size: 0.6em; }
         }
     </style>
 </head>
@@ -786,14 +810,7 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                     </div>
                 </div>
                 
-                <div class="evidence-box">
-                    <div class="evidence-header">Evidence 6: First Submission - Active Campaign</div>
-                    <img src="06-virustotal-first-submission.png" alt="First Submission">
-                    <div class="evidence-caption">
-                        First submission to VirusTotal confirms this is a newly identified, actively running campaign.
-                    </div>
                 </div>
-            </div>
         </section>
 
         <!-- Section 4: Dynamic Analysis -->
@@ -861,6 +878,7 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                         The campaign operates a <strong>modular payload system</strong>. The same infection chain delivers 
                         different final payloads based on C2 configuration. Two distinct payloads were observed:
                     </p>
+                    <div class="table-wrapper">
                     <table style="margin-top: 15px;">
                         <tr>
                             <th>Payload</th>
@@ -881,6 +899,7 @@ SHA256          35EC1234DA4E6433A797E5BA719E3A6B2CB455A8C3815601074B3FEF7BBC9B39
                             <td>Cryptocurrency theft</td>
                         </tr>
                     </table>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1346,7 +1365,7 @@ undefined8 FUN_14000177e(char *param_1) {  // param_1 = attacker's wallet addres
                         </div>
                     </div>
                     <div class="stage-fork">↓ MODULAR PAYLOAD SELECTION ↓</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="payload-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="chain-stage final">
                             <div class="stage-num">5A</div>
                             <div class="stage-info">
@@ -1411,8 +1430,9 @@ foreach ($url in $urls) {
                     </div>
                 </div>
                 
-                <div class="highlight-box critical">
-                    <h3>Campaign Status: ACTIVE</h3>
+<div class="highlight-box critical">
+                   <h3>Campaign Status: ACTIVE</h3>
+                    <div class="table-wrapper">
                     <table style="margin: 0;">
                         <tr>
                             <th>C2 Server</th>
@@ -1435,6 +1455,7 @@ foreach ($url in $urls) {
                             <td>Payload Server</td>
                         </tr>
                     </table>
+                    </div>
                 </div>
             </div>
         </section>
